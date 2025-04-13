@@ -62,7 +62,11 @@ export default function Home(props) {
         <ConnectWalletButton />
       )}
       {injectedAccount && (
-        <StakingForm />
+        <StakingForm
+          isFactoryError={isFactoryError}
+          isFetchingFactory={isFetchingFactory}
+          contractInfo={contractInfo}
+        />
       )}
     </>
   )

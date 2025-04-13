@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import StakingFormNewDeposit from './StakingForm/NewDeposit'
 
-const StakingForm = () => {
+const StakingForm = (props) => {
+  const {
+    isFactoryError,
+    isFetchingFactory,
+    contractInfo,
+
+  } = props
+
   const [mode, setMode] = useState("Stake"); // Изначальный режим: Stake
   const [selectedStakingId, setSelectedStakingId] = useState(null);
-  const [stakeAmount, setStakeAmount] = useState("");
   const [unstakeAmount, setUnstakeAmount] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
 
   const [stakingPeriods, setStakingPeriods] = useState([
     {
@@ -28,9 +34,7 @@ const StakingForm = () => {
     },
   ]);
 
-  const handleInputChange = (e) => {
-    setStakeAmount(e.target.value);
-  };
+
 
   const handleUnstakeInputChange = (e) => {
     setUnstakeAmount(e.target.value);
@@ -40,6 +44,11 @@ const StakingForm = () => {
     setIsChecked(e.target.checked);
   };
 
+  if (isFetchingFactory) {
+    return (
+      <div>Loading</div>
+    )
+  }
   return (
     <div className="w-full p-6">
       <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-lg mx-auto">
@@ -75,78 +84,13 @@ const StakingForm = () => {
 
         {/* Режим Stake */}
         {mode === "Stake" && (
-          <div>
-            <p className="text-center text-gray-500 mb-6">
-              Stake ETH and receive dETH while staking
-            </p>
-
-            {/* Stake Amount */}
-            <div className="mb-4">
-              <label htmlFor="stakeAmount" className="block text-gray-700 mb-2">
-                Stake Amount
-              </label>
-              <div className="flex items-center">
-                <input
-                  type="number"
-                  id="stakeAmount"
-                  value={stakeAmount}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-l focus:outline-none focus:border-blue-500"
-                />
-                <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-r">
-                  MAX
-                </button>
-              </div>
-            </div>
-
-            {/* Transaction Details */}
-            <div className="bg-gray-100 p-4 rounded mb-4">
-              <h3 className="text-lg font-bold mb-2">Transaction details</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p>You will receive</p>
-                  <p>Exchange rate</p>
-                  <p>Transaction cost</p>
-                  <p>Reward fee</p>
-                  <p>Annual percentage rate</p>
-                </div>
-                <div>
-                  <p>3.82 dETH</p>
-                  <p>1 ETH = 1 dETH</p>
-                  <p>$3.20 (0.002)</p>
-                  <p>10%</p>
-                  <p className="text-green-500">4.3%</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Checkbox */}
-            <div className="flex items-center mb-4">
-              <input
-                type="checkbox"
-                id="termsCheckbox"
-                checked={isChecked}
-                onChange={handleCheckboxChange}
-                className="mr-2"
-              />
-              <label htmlFor="termsCheckbox" className="text-gray-700">
-                I have read and I accept the{" "}
-                <a href="#" className="text-blue-500 underline">
-                  terms and conditions
-                </a>
-              </label>
-            </div>
-
-            {/* Stake Button */}
-            <button
-              disabled={!isChecked || stakeAmount <= 0}
-              className={`w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 ${
-                !isChecked || stakeAmount <= 0 ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              Stake
-            </button>
-          </div>
+          <>
+            <StakingFormNewDeposit
+              isFactoryError={isFactoryError}
+              isFetchingFactory={isFetchingFactory}
+              contractInfo={contractInfo}
+            />
+          </>
         )}
 
         {/* Режим Unstake */}
