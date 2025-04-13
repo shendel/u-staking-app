@@ -1,0 +1,1 @@
+export const MAINNET_CHAIN_ID = 11155111 //56

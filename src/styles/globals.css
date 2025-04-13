@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-100 font-sans leading-normal tracking-normal;
+}
+
+.container {
+  @apply mx-auto;
+}

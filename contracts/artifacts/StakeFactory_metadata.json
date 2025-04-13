@@ -1,0 +1,1199 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "contract IERC20",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "contract IERC20",
+						"name": "_rewardToken",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_taxreceiver",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_deductionPercentage",
+						"type": "uint256"
+					},
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "lockTimeDays",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "minimumDeposit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "percentageBasisPoints",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "maxRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "minRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "decrementStep",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "stepSize",
+								"type": "uint256"
+							},
+							{
+								"internalType": "bool",
+								"name": "fixedBasisPoints",
+								"type": "bool"
+							},
+							{
+								"internalType": "uint256",
+								"name": "stakedAmount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct StakeFactory.LockPeriodParams[]",
+						"name": "_initLockPeriods",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "From",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "day",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					}
+				],
+				"name": "Deposite_",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "previousOwner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipTransferred",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "Paused",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "Unpaused",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "IS_ULTIMATE_STAKE_FACTORY",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "Token",
+				"outputs": [
+					{
+						"internalType": "contract IERC20",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_addr",
+						"type": "address"
+					}
+				],
+				"name": "addSpam",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "allocation",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "allowedLockPeriods",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "deductionPercentage",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_lockDays",
+						"type": "uint256"
+					}
+				],
+				"name": "deposit",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "depositTokenDecimals",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "depositeTime",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "depositeToken",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "depositeTokensTotal",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "contract IERC20",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "emergencyWithdrawTokens",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_amount",
+						"type": "uint256"
+					}
+				],
+				"name": "emergencyWithdrawWei",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_days",
+						"type": "uint256"
+					}
+				],
+				"name": "getLockPeriodParams",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "lockTimeDays",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "minimumDeposit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "percentageBasisPoints",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "maxRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "minRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "decrementStep",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "stepSize",
+								"type": "uint256"
+							},
+							{
+								"internalType": "bool",
+								"name": "fixedBasisPoints",
+								"type": "bool"
+							},
+							{
+								"internalType": "uint256",
+								"name": "stakedAmount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct StakeFactory.LockPeriodParams",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getLockPeriods",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getLockPeriodsInfo",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "lockTimeDays",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "minimumDeposit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "percentageBasisPoints",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "maxRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "minRate",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "decrementStep",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "stepSize",
+								"type": "uint256"
+							},
+							{
+								"internalType": "bool",
+								"name": "fixedBasisPoints",
+								"type": "bool"
+							},
+							{
+								"internalType": "uint256",
+								"name": "stakedAmount",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct StakeFactory.LockPeriodParams[]",
+						"name": "ret",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getRewardTokenInfo",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "symbol",
+						"type": "string"
+					},
+					{
+						"internalType": "uint8",
+						"name": "decimals",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint256",
+						"name": "balance",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getStakeTokenInfo",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "symbol",
+						"type": "string"
+					},
+					{
+						"internalType": "uint8",
+						"name": "decimals",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint256",
+						"name": "balance",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					}
+				],
+				"name": "getUser",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "Address",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "DepositeTokenTotal",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "LastUpdated",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256[]",
+								"name": "LockableDays",
+								"type": "uint256[]"
+							},
+							{
+								"internalType": "uint256",
+								"name": "WithdrawedReward",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "WithdrawAbleReward",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256[]",
+								"name": "DepositeTime",
+								"type": "uint256[]"
+							}
+						],
+						"internalType": "struct StakeFactory.UserInfo",
+						"name": "info",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_offset",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_limit",
+						"type": "uint256"
+					}
+				],
+				"name": "getUsers",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "Address",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "DepositeTokenTotal",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "LastUpdated",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256[]",
+								"name": "LockableDays",
+								"type": "uint256[]"
+							},
+							{
+								"internalType": "uint256",
+								"name": "WithdrawedReward",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "WithdrawAbleReward",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256[]",
+								"name": "DepositeTime",
+								"type": "uint256[]"
+							}
+						],
+						"internalType": "struct StakeFactory.UserInfo[]",
+						"name": "ret",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "_index",
+						"type": "uint256[]"
+					}
+				],
+				"name": "harwest",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "_totalWithdrawAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_totalReward",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_deductionFee",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "isSpam",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "lastUpdated",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "lockPeriodParams",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "lockTimeDays",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "minimumDeposit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "percentageBasisPoints",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "maxRate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "minRate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "decrementStep",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "stepSize",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "fixedBasisPoints",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "stakedAmount",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "lockableDays",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "paused",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "pendingRewards",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "reward",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_days",
+						"type": "uint256"
+					}
+				],
+				"name": "removeLockPeriod",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_addr",
+						"type": "address"
+					}
+				],
+				"name": "removeSpam",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "rewardToken",
+				"outputs": [
+					{
+						"internalType": "contract IERC20",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "rewardTokenDecimals",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_days",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_minimumDeposit",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "percentageBasisPoints",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_maxRate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_minRate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_decrementStep",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_stepSize",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "_fixedBasisPoints",
+						"type": "bool"
+					}
+				],
+				"name": "setAllocation",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "percentageBasisPoints",
+						"type": "uint256"
+					}
+				],
+				"name": "setDeductionPercentage",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_newTaxReceiver",
+						"type": "address"
+					}
+				],
+				"name": "setTaxReceiver",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "taxreceiver",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "time",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "users",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "usersCount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "usersExists",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "withdrawedReward",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
+			}
+		],
+		"devdoc": {
+			"events": {
+				"Paused(address)": {
+					"details": "Emitted when the pause is triggered by `account`.\t"
+				},
+				"Unpaused(address)": {
+					"details": "Emitted when the pause is lifted by `account`.\t"
+				}
+			},
+			"kind": "dev",
+			"methods": {
+				"owner()": {
+					"details": "Returns the address of the current owner."
+				},
+				"paused()": {
+					"details": "Returns true if the contract is paused, and false otherwise.\t"
+				},
+				"transferOwnership(address)": {
+					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"StakeFactory.sol": "StakeFactory"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"StakeFactory.sol": {
+			"keccak256": "0x162f0d76592c2c9b2657abb94fde94030249d5b417dbbba4da8a8bf6447e09af",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://67fd888574b3d72abf4af98e42885efbdfab98f914eb98a9133982b935f49500",
+				"dweb:/ipfs/QmUpuf4aQr1uWBCPEHukqtgSMNYRTcqvsHp9hEtituiojX"
+			]
+		}
+	},
+	"version": 1
+}

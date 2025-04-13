@@ -1,0 +1,100 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "Paused",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "Unpaused",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "paused",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"events": {
+				"Paused(address)": {
+					"details": "Emitted when the pause is triggered by `account`.\t"
+				},
+				"Unpaused(address)": {
+					"details": "Emitted when the pause is lifted by `account`.\t"
+				}
+			},
+			"kind": "dev",
+			"methods": {
+				"constructor": {
+					"details": "Initializes the contract in unpaused state.\t"
+				},
+				"paused()": {
+					"details": "Returns true if the contract is paused, and false otherwise.\t"
+				}
+			},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"StakeFactory.sol": "Pausable"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"StakeFactory.sol": {
+			"keccak256": "0x162f0d76592c2c9b2657abb94fde94030249d5b417dbbba4da8a8bf6447e09af",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://67fd888574b3d72abf4af98e42885efbdfab98f914eb98a9133982b935f49500",
+				"dweb:/ipfs/QmUpuf4aQr1uWBCPEHukqtgSMNYRTcqvsHp9hEtituiojX"
+			]
+		}
+	},
+	"version": 1
+}
