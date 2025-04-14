@@ -39,7 +39,7 @@ const StakingFormNewDeposit = (props) => {
     },
     fetchFactoryInfo
   } = useStakeFactory()
-  console.log('>>> fetchFactoryInfo', fetchFactoryInfo)
+  
   const { addNotification } = useNotification();
   
   const [stakeAmount, setStakeAmount] = useState(0);
@@ -67,7 +67,6 @@ const StakingFormNewDeposit = (props) => {
           const { normalized } = answer
           setTokenBalance(normalized)
         }
-        console.log('>>> tokenBalance', answer)
       }).catch((err) => {
       setIsBalanceFetching(false)
         console.log('>>> err', err)
@@ -163,7 +162,6 @@ const StakingFormNewDeposit = (props) => {
       onSuccess: () => {
         setIsDepositiong(false)
         addNotification('success', 'Successfull deposited')
-        console.log('>>> CALL FETCH FACTORY INFO', fetchFactoryInfo)
         fetchFactoryInfo()
       },
       onError: () => {

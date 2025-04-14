@@ -39,6 +39,7 @@ const fetchStakeFactory = (options) => {
             lockPeriodsInfo:            { func: 'getLockPeriodsInfo', asArray: true },
             usersCount:                 { func: 'usersCount' },
             paused:                     { func: 'paused' },
+            time:                       { func: 'time' }
           }
         }).then((mcAnswer) => {
           if (mcAnswer && mcAnswer.IS_ULTIMATE_STAKE_FACTORY) {
