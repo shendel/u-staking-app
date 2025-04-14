@@ -5,7 +5,8 @@ const LoadingPlaceholder = ({ width, height, children }) => {
     <div
       className={`bg-gray-200 rounded-lg shadow-md overflow-hidden animate-pulse ${
         width ? `w-${width}` : (children) ? "" : "w-full"
-      } ${height ? `h-${height}` : (children) ? "" : "h-16"} relative`}
+      } relative`}
+      style={{ height: (height) ? height : 'auto'}}
     >
       {/* Анимация переливания */}
       <div

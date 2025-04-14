@@ -6,7 +6,6 @@ const StakingForm = (props) => {
     isFactoryError,
     isFetchingFactory,
     contractInfo,
-
   } = props
 
   const [mode, setMode] = useState("Stake"); // Изначальный режим: Stake

@@ -4,7 +4,7 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import NETWORKS from '@/constants/NETWORKS'
 
 import { mainnet } from 'wagmi/chains'
-console.log('>>> MAINNET', mainnet)
+
 const GET_ALL_CHAINS = () => {
   return Object.keys(NETWORKS).map((chainName) => {
     return {

@@ -14,10 +14,11 @@ export const useNotification = () => {
 // Провайдер контекста
 export default function NotificationProvider({ children }) {
   const [notifications, setNotifications] = useState([]);
-
+  let idCounter = 0;
   // Функция для добавления новой нотификации
   const addNotification = (type, message, link ,linkTitle) => {
-    const id = Date.now(); // Генерируем уникальный ID
+    const id = `${Date.now()}_${new Date().getMilliseconds()}_${idCounter}`; // Генерируем уникальный ID
+    idCounter++
     let timerId;
 
     const newNotification = {

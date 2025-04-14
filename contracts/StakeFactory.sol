@@ -341,7 +341,8 @@ contract StakeFactory is Ownable, Pausable, ReentrancyGuard {
 
     uint256 public deductionPercentage = 2500; // 25% = 2500 базисных пунктов
 
-    uint256 public time = 3600; //days;
+    // Dev = 1 minute = 1 day
+    uint256 public time = 60; // 3600; //days;
 
     uint256[] public allowedLockPeriods; // Массив допустимых периодов блокировки
 

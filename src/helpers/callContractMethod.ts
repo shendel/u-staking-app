@@ -1,4 +1,3 @@
-import NftContractData from "../contracts/source/artifacts/StakeNFT.json"
 import Web3 from 'web3'
 import { calcSendArgWithFee } from "./calcSendArgWithFee"
 import { BigNumber } from 'bignumber.js'
@@ -10,7 +9,8 @@ const callContractMethod = (options) => {
       contract,
       method,
       args,
-      weiAmount
+      weiAmount,
+      calcGas,
     } = options
     const onTrx = options.onTrx || (() => {})
     const onSuccess = options.onSuccess || (() => {})
@@ -29,6 +29,12 @@ const callContractMethod = (options) => {
           weiAmount
         )
         const gasPrice = await activeWeb3.eth.getGasPrice()
+        if (calcGas) {
+          resolve({
+            gas: new BigNumber(sendArgs.gas).multipliedBy(gasPrice).toFixed()
+          })
+          return
+        }
         sendArgs.gasPrice = gasPrice
 
         let txHash
@@ -39,9 +45,14 @@ const callContractMethod = (options) => {
             onTrx(hash)
           })
           .on('error', (error) => {
-            console.log('transaction error:', error)
-            onError(error)
-            reject(error)
+            console.log('>> ERROR', error)
+            if (!error.toString().includes('not mined within')) {
+              console.log('>>> on error', error)
+              onError(error)
+              reject(error)
+            } else {
+              console.log('>>> wail wait')
+            }
           })
           .on('receipt', (receipt) => {
             onSuccess(receipt)
@@ -62,7 +73,6 @@ const callContractMethod = (options) => {
                 })
               }, 1000)
             } else {
-              onError(err)
               reject(err)
             }
           })

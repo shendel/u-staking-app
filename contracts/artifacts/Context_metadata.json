@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.26+commit.8a97fa7a"
+		"version": "0.8.12+commit.f00d7308"
 	},
 	"language": "Solidity",
 	"output": {
@@ -20,7 +20,7 @@
 		"compilationTarget": {
 			"StakeFactory.sol": "Context"
 		},
-		"evmVersion": "cancun",
+		"evmVersion": "london",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -33,11 +33,11 @@
 	},
 	"sources": {
 		"StakeFactory.sol": {
-			"keccak256": "0x162f0d76592c2c9b2657abb94fde94030249d5b417dbbba4da8a8bf6447e09af",
+			"keccak256": "0xe933015f803579e96cb851af4179a0cfff18433a57e273137192e306f8197f27",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://67fd888574b3d72abf4af98e42885efbdfab98f914eb98a9133982b935f49500",
-				"dweb:/ipfs/QmUpuf4aQr1uWBCPEHukqtgSMNYRTcqvsHp9hEtituiojX"
+				"bzz-raw://c124fe411c31f8e4498c839dd95c6107cb10e8ca6538bc15cb6bce63dcbe5546",
+				"dweb:/ipfs/QmaeHCLKcUQj8iXfMYMnhM6CWrwNiTNkpfcmsdbzkz2VT5"
 			]
 		}
 	},

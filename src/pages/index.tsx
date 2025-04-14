@@ -20,6 +20,9 @@ import Header from '@/components/Header'
 
 import NETWORKS from '@/contstans/NETWORKS'
 
+import StakeFactoryProvider from '@/contexts/StakeFactoryContext'
+import { useStorageProvider } from '@/storage/StorageProvider'
+
 
 function MyApp(pageProps) {
   const viewsPaths = {
@@ -28,6 +31,8 @@ function MyApp(pageProps) {
   }
 
   const [ appIsConfigured, setAppIsConfigured ] = useState(false)
+  const [ uStakeChainId, setUStakeChainId ] = useState(false)
+  const [ uStakeContract, setUStakeContract ] = useState(false)
   
   const checkAppIsConfigured = (storageData) => {
     console.log(' checkAppIsConfigured', storageData)
@@ -35,6 +40,8 @@ function MyApp(pageProps) {
       && storageData.uStakeChainId
       && storageData.uStakeContract
     ) {
+      setUStakeChainId(storageData.uStakeChainId)
+      setUStakeContract(storageData.uStakeContract)
       setAppIsConfigured(true)
       return storageData.uStakeChainId
     } else {
@@ -47,7 +54,7 @@ function MyApp(pageProps) {
     <>
       <AppRootWrapper checkAppIsConfigured={checkAppIsConfigured}>
         <AppConfigInstall>
-          <>
+          <StakeFactoryProvider chainId={uStakeChainId} contractAddress={uStakeContract}>
             <Header />
             <div className="container mx-auto pt-10">
               <HashRouterViews
@@ -58,7 +65,7 @@ function MyApp(pageProps) {
                 on404={Page404}
               />
             </div>
-          </>
+          </StakeFactoryProvider>
         </AppConfigInstall>
       </AppRootWrapper>
     </>

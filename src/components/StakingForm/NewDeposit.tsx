@@ -2,13 +2,29 @@ import React, { useState, useEffect } from "react";
 import InputAmount from '@/components/ui/InputAmount'
 import fetchTokenAllowance from '@/helpers/fetchTokenAllowance'
 import fetchTokenBalance from '@/helpers/fetchTokenBalance'
-
+import approveToken from '@/helpers/approveToken'
+import DepositDetails from './DepositDetails'
 import { useInjectedWeb3 } from '@/web3/InjectedWeb3Provider'
 import BigNumber from "bignumber.js"
 import { toWei, fromWei } from '@/helpers/wei'
+import calculateReward from '@/helpers_stake/calculateReward'
+import depositTokens from '@/helpers_stake/depositTokens'
+import Button from '@/components/ui/Button'
+import { GET_CHAIN_BYID } from '@/web3/chains'
+import { useNotification } from "@/contexts/NotificationContext";
+import { getTransactionLink, getShortTxHash } from '@/helpers/etherscan'
+import { useStakeFactory } from '@/contexts/StakeFactoryContext'
 
 
 const StakingFormNewDeposit = (props) => {
+  const {
+    injectedWeb3,
+    injectedAccount,
+    injectedChainId,
+    switchNetwork,
+    isSwitchingNetwork,
+  } = useInjectedWeb3()
+
   const {
     isFactoryError,
     isFetchingFactory,
@@ -19,15 +35,12 @@ const StakingFormNewDeposit = (props) => {
       stakingTokenInfo,
       rewardTokenInfo,
       lockPeriodsInfo,
-    }
-  } = props
+    },
+    fetchFactoryInfo
+  } = useStakeFactory()
+  console.log('>>> fetchFactoryInfo', fetchFactoryInfo)
+  const { addNotification } = useNotification();
   
-  const {
-    injectedWeb3,
-    injectedAccount,
-    injectedChainId
-  } = useInjectedWeb3()
-
   const [stakeAmount, setStakeAmount] = useState(0);
   const [isChecked, setIsChecked] = useState(false);
 
@@ -62,6 +75,31 @@ const StakingFormNewDeposit = (props) => {
       setTokenBalance(0)
     }
   }, [ injectedAccount, stakingTokenInfo ])
+  const [ isApproving, setIsApproving ] = useState(false)
+  
+  const handleApproveToken = () => {
+    addNotification('info', `Approving ${stakingTokenInfo.symbol}. Confirm transaction`)
+    setIsApproving(true)
+    approveToken({
+      activeWallet: injectedAccount,
+      activeWeb3: injectedWeb3,
+      tokenAddress: stakingTokenInfo.addr,
+      approveFor: contractInfo.address,
+      weiAmount: toWei(stakeAmount, stakingTokenInfo.decimals),
+      onTrx: (txHash) => {
+        addNotification('info', 'Approving transaction', getTransactionLink(chainId, txHash), getShortTxHash(txHash))
+      },
+      onSuccess: () => {
+        addNotification('success', `Token ${stakingTokenInfo.symbol} successfull approved`)
+        setIsApproving(false)
+        setTokenAllowance(toWei(stakeAmount, stakingTokenInfo.decimals))
+      },
+      onError: () => {
+        addNotification('error', 'Fail approving')
+        setIsApproving(false)
+      }
+    }).catch((err) => {})
+  }
   
   useEffect(() => {
     if (injectedAccount && factoryAddress && stakingTokenInfo && stakingTokenInfo.addr) {
@@ -85,29 +123,64 @@ const StakingFormNewDeposit = (props) => {
     }
   }, [ injectedAccount, factoryAddress, stakingTokenInfo ])
 
+
   const handleInputChange = (v) => {
     setStakeAmount(v)
   }
   
+  const [ hasAmountError, setHasAmountError ] = useState(false)
+  
   const lockPeriods = lockPeriodsInfo.sort((a,b) => { return (a.lockTimeDays > b.lockTimeDays) ? 1 : -1 })
+  const [ lockPeriodDetails, setLockPeriodDetails ] = useState(false)
   const [ lockPeriod, setLockPeriod ] = useState(0)
   
   const handleChangeLockPeriod = (days) => {
     setLockPeriod(days)
+    if (days) {
+      setLockPeriodDetails(lockPeriodsInfo.find(({ lockTimeDays }) => lockTimeDays == days))
+    } else {
+      setLockPeriodDetails(false)
+    }
   }
   const handleCheckboxChange = (e) => {
     setIsChecked(e.target.checked);
   };
 
-  const isNeedApprove = new BigNumber(toWei(stakeAmount, stakingTokenInfo.decimals)).isGreaterThan(tokenAllowance)
+  const [ isDepositing, setIsDepositiong ] = useState(false)
   
+  const handleDepositTokens = () => {
+    setIsDepositiong(true)
+    addNotification('info', `Deposit ${stakeAmount} ${stakingTokenInfo.symbol} for ${lockPeriod} days. Confirm transaction`)
+    depositTokens({
+      activeWeb3: injectedWeb3,
+      stakeFactoryAddress: factoryAddress,
+      lockDays: lockPeriod,
+      amountWei: toWei(stakeAmount, stakingTokenInfo.decimals),
+      onTrx: (txHash) => {
+        addNotification('info', 'Deposit transaction', getTransactionLink(chainId, txHash), getShortTxHash(txHash))
+      },
+      onSuccess: () => {
+        setIsDepositiong(false)
+        addNotification('success', 'Successfull deposited')
+        console.log('>>> CALL FETCH FACTORY INFO', fetchFactoryInfo)
+        fetchFactoryInfo()
+      },
+      onError: () => {
+        addNotification('error', 'Fail deposit tokens')
+        setIsDepositiong(false)
+      }
+    }).catch((err) => {})
+  }
+  
+  const isNeedApprove = new BigNumber(toWei(stakeAmount, stakingTokenInfo.decimals)).isGreaterThan(tokenAllowance)
+
   return (
     <div>
       <p className="text-center text-gray-500 mb-6">
         Stake ETH and receive dETH while staking
       </p>
       <div className="mb-4">
-        <label className="block text-gray-700 mb-2">
+        <label className="block text-gray-700 mb-2 font-bold">
           {`Deposit Lock period`}
         </label>
         <select
@@ -130,30 +203,21 @@ const StakingFormNewDeposit = (props) => {
           onChange={setStakeAmount}
           tokenInfo={stakingTokenInfo}
           tokenBalance={tokenBalance}
+          setHasAmountError={setHasAmountError}
           isDisabled={(lockPeriod == 0)}
+          minimumAmount={((lockPeriodDetails) ? lockPeriodDetails.minimumDeposit : false)}
         />
       </div>
       
       {/* Transaction Details */}
-      <div className="bg-gray-100 p-4 rounded mb-4">
-        <h3 className="text-lg font-bold mb-2">Transaction details</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p>You will receive</p>
-            <p>Exchange rate</p>
-            <p>Transaction cost</p>
-            <p>Reward fee</p>
-            <p>Annual percentage rate</p>
-          </div>
-          <div>
-            <p>3.82 dETH</p>
-            <p>1 ETH = 1 dETH</p>
-            <p>$3.20 (0.002)</p>
-            <p>10%</p>
-            <p className="text-green-500">4.3%</p>
-          </div>
-        </div>
-      </div>
+      {lockPeriodDetails && (stakeAmount > 0) && !hasAmountError && (
+        <DepositDetails
+          depositPeriod={lockPeriodDetails}
+          stakeAmount={stakeAmount}
+          stakingTokenInfo={stakingTokenInfo}
+          rewardTokenInfo={rewardTokenInfo}
+        />
+      )}
 
       {/* Checkbox */}
       <div className="flex items-center mb-4">
@@ -172,15 +236,23 @@ const StakingFormNewDeposit = (props) => {
         </label>
       </div>
 
-      {/* Stake Button */}
-      <button
-        disabled={!isChecked || stakeAmount <= 0}
-        className={`w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 ${
-          !isChecked || stakeAmount <= 0 ? "opacity-50 cursor-not-allowed" : ""
-        }`}
-      >
-        Stake
-      </button>
+      {injectedChainId != chainId ? (
+        <Button isBold={true} fullWidth={true} onClick={() => { switchNetwork(chainId) }}>
+          {`Switch to "${GET_CHAIN_BYID(chainId).name}"`}
+        </Button>
+      ) : (
+        <>
+          {isNeedApprove ? (
+            <Button fullWidth={true} isBold={true} isDisabled={!isChecked} onClick={handleApproveToken} isLoading={isApproving}>
+              {`Approve ${stakeAmount} ${stakingTokenInfo.symbol}`}
+            </Button>
+          ) : (
+            <Button isDisabled={!isChecked || stakeAmount <= 0} isLoading={isDepositing} fullWidth={true} isBold={true} onClick={handleDepositTokens}>
+              Stake
+            </Button>
+          )}
+        </>
+      )}
     </div>
   )
 };

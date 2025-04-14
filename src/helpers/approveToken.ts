@@ -79,7 +79,6 @@ const approveToken = (options) => {
           }, 1000)
           console.log('>>> Minted ready')
         } else {
-          onError(err)
           reject(err)
         }
       }).finally(() => {

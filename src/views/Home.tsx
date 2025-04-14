@@ -3,6 +3,8 @@ import { useEffect, useState, Component } from "react"
 
 import { useInjectedWeb3 } from '@/web3/InjectedWeb3Provider'
 import { useStorageProvider } from '@/storage/StorageProvider'
+import { useStakeFactory } from '@/contexts/StakeFactoryContext'
+
 import StakingForm from '@/components/StakingForm'
 import StakingInfoBlock from '@/components/StakingInfoBlock'
 import ConnectWalletButton from '@/components/ConnectWalletButton'
@@ -21,33 +23,12 @@ export default function Home(props) {
   } = useInjectedWeb3()
 
   const {
-    storageData,
-    storageData: {
-      uStakeChainId,
-      uStakeContract
-    }
-  } = useStorageProvider()
-  
-  const [ isFetchingFactory, setIsFetchingFactory ] = useState(true)
-  const [ isFactoryError, setIsFactoryError ] = useState(false)
-  const [ contractInfo, setContractInfo ] = useState(false)
-  useEffect(() => {
-    if (uStakeChainId && uStakeContract) {
-      setIsFetchingFactory(true)
-      fetchStakeFactory({
-        chainId: uStakeChainId,
-        address: uStakeContract,
-      }).then((answer) => {
-        setIsFactoryError(false)
-        setIsFetchingFactory(false)
-        setContractInfo(answer)
-      }).catch((err) => {
-        setIsFetchingFactory(false)
-        setIsFactoryError(true)
-      })
-    }
-  }, [ uStakeChainId, uStakeContract ])
-
+    isFetchingFactory,
+    isFactoryError,
+    contractInfo,
+    fetchFactoryInfo
+  } = useStakeFactory()
+console.log('>>> Home fetchFactoryInfo', fetchFactoryInfo)
   if (!appIsConfigured) {
     return (<SetupAppForm gotoPage={gotoPage} />)
   }  
@@ -57,6 +38,7 @@ export default function Home(props) {
         isFetchingFactory={isFetchingFactory}
         isFactoryError={isFactoryError}
         contractInfo={contractInfo}
+        fetchFactoryInfo={fetchFactoryInfo}
       />
       {!injectedAccount && (
         <ConnectWalletButton />
@@ -66,6 +48,7 @@ export default function Home(props) {
           isFactoryError={isFactoryError}
           isFetchingFactory={isFetchingFactory}
           contractInfo={contractInfo}
+          fetchFactoryInfo={fetchFactoryInfo}
         />
       )}
     </>

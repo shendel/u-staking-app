@@ -42,8 +42,13 @@ export default function InjectedWeb3Provider(props) {
   const account = useAccount()
   const network = useNetwork()
   const switchN = useSwitchNetwork()
-  const { isLoading, pendingChainId, switchNetwork } = useSwitchNetwork()
+  const { isLoading, pendingChainId, switchNetwork: _switchNetwork } = useSwitchNetwork()
   
+  const switchNetwork = (chainId) => {
+    _switchNetwork(chainId)
+    console.log(_switchNetwork)
+    console.log(pendingChainId, isLoading)
+  }
   const switchAccount = () => {}
 
   const isSwitchingNetwork = (!!isLoading || !!pendingChainId)
