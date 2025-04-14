@@ -1,43 +1,50 @@
 import BigNumber from "bignumber.js";
 import { fromWei } from '@/helpers/wei'
 
+// Конвертация токенов A в токены B с учетом десятичных знаков
+const convertTokenAToTokenB = (params) => {
+  const {
+    inAmountTokenA, tokenADecimals, tokenBDecimals
+  } = params
+  const amount = new BigNumber(inAmountTokenA);
+
+  if (tokenADecimals > tokenBDecimals) {
+    // Если у TokenA больше десятичных знаков, делим на 10^(разница)
+    const difference = tokenADecimals - tokenBDecimals;
+    return amount.div(new BigNumber(10).pow(difference)).toFixed(0); // Возвращаем целое число
+  } else if (tokenADecimals < tokenBDecimals) {
+    // Если у TokenB больше десятичных знаков, умножаем на 10^(разница)
+    const difference = tokenBDecimals - tokenADecimals;
+    return amount.times(new BigNumber(10).pow(difference)).toFixed(0); // Возвращаем целое число
+  } else {
+    // Если количество десятичных знаков одинаковое, просто возвращаем входное значение
+    return amount.toFixed(0); // Возвращаем целое число
+  }
+}
+
+// Расчет вознаграждения
 const calculateReward = (params) => {
+  // depositAmount, apyBasePoints, depositTokenDecimals, rewardTokenDecimals
   const {
     stakedAmountWei,
     depositTokenDecimals,
     rewardTokenDecimals,
     apyBasisPoints
   } = params
-  console.log('>>> calculateReward', params)
-  // Создаем объекты BigNumber для входных данных
-  const stakedAmount = new BigNumber(stakedAmountWei);
+
+  const deposit = new BigNumber(stakedAmountWei);
   const apy = new BigNumber(apyBasisPoints);
 
-  // Конвертация застейканой суммы в базовые единицы (например, ETH → dETH)
-  const stakedAmountBaseUnits = stakedAmount.div(
-    new BigNumber(10).pow(depositTokenDecimals)
-  );
+  // Расчет вознаграждения в базовых единицах токена A
+  const rewardInTokenA = deposit.times(apy).div(10000).toFixed(0);
 
-  // Расчет вознаграждения в базовых единицах
-  const rewardBaseUnits = stakedAmountBaseUnits
-    .times(apy)
-    .div(10000); // 100% = 10000 базисных пунктов
+  const rewardInTokenB = convertTokenAToTokenB({
+    inAmountTokenA: rewardInTokenA,
+    tokenADecimals: depositTokenDecimals,
+    tokenBDecimals: rewardTokenDecimals
+  });
 
-  // Конвертация вознаграждения обратно в WEI для reward токена
-  const rewardWei = rewardBaseUnits.times(
-    new BigNumber(10).pow(rewardTokenDecimals)
-  );
-
-  //
-  /*
-    uint256 reward = (depositeToken[msg.sender][_index[z]] * allocation[lockableDays[msg.sender][_index[z]]]) / 10000;
-    reward /= 10**uint256(depositTokenDecimals);
-  */
-  const reward = new BigNumber(stakedAmountWei).times(apyBasisPoints).div(10000)
-  //return fromWei(reward, depositTokenDecimals)
-  let reward2 = reward.div(new BigNumber(10).pow(depositTokenDecimals))
-  console.log('>>>', rewardWei.toFixed(), reward.toFixed(), reward2.toFixed())
-  //return reward2.toFixed()
-  return rewardWei.toFixed(); // Возвращаем результат как строку
+  return rewardInTokenB; // Возвращаем результат в WEI токенов B
 }
+
 export default calculateReward

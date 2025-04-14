@@ -10,6 +10,7 @@ import { toWei, fromWei } from '@/helpers/wei'
 import calculateReward from '@/helpers_stake/calculateReward'
 import depositTokens from '@/helpers_stake/depositTokens'
 import Button from '@/components/ui/Button'
+import Select from '@/components/ui/Select'
 import { GET_CHAIN_BYID } from '@/web3/chains'
 import { useNotification } from "@/contexts/NotificationContext";
 import { getTransactionLink, getShortTxHash } from '@/helpers/etherscan'
@@ -183,17 +184,19 @@ const StakingFormNewDeposit = (props) => {
         <label className="block text-gray-700 mb-2 font-bold">
           {`Deposit Lock period`}
         </label>
-        <select
-          value={lockPeriod} onChange={(e) => { handleChangeLockPeriod(e.target.value) }}
-          className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+        <Select
+          value={lockPeriod} onChange={(value) => { handleChangeLockPeriod(value) }}
+          disabled={isApproving || isDepositing}
         >
-          <option value={0}>Select Period</option>
-          {lockPeriods.map(({ lockTimeDays }) => {
-            return (
-              <option key={lockTimeDays} value={lockTimeDays}>{`${lockTimeDays} Days`}</option>
-            )
-          })}
-        </select>
+          <>
+            <option value={0}>Select Period</option>
+            {lockPeriods.map(({ lockTimeDays }) => {
+              return (
+                <option key={lockTimeDays} value={lockTimeDays}>{`${lockTimeDays} Days`}</option>
+              )
+            })}
+          </>
+        </Select>
       </div>
       {/* Stake Amount */}
       <div className="mb-4">
@@ -204,7 +207,7 @@ const StakingFormNewDeposit = (props) => {
           tokenInfo={stakingTokenInfo}
           tokenBalance={tokenBalance}
           setHasAmountError={setHasAmountError}
-          isDisabled={(lockPeriod == 0)}
+          isDisabled={(lockPeriod == 0) || isApproving || isDepositing}
           minimumAmount={((lockPeriodDetails) ? lockPeriodDetails.minimumDeposit : false)}
         />
       </div>

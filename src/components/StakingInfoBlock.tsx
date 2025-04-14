@@ -1,5 +1,6 @@
 import React from "react";
 import LoadingPlaceholder from "@/components/LoadingPlaceholder";
+import { AnimatePresence, motion } from "framer-motion";
 import { fromWei } from '@/helpers/wei'
 import { getAddressLink } from '@/helpers/etherscan'
 import { useStakeFactory } from '@/contexts/StakeFactoryContext'
@@ -15,7 +16,9 @@ const StakingPeriodCard = (options) => {
     tokenSymbol
   } = options
   return (
-    <div className="bg-gray-50 rounded-lg shadow-md p-6 w-full lg:max-w-xs max-w-sm mx-auto">
+    <div
+      className="bg-gray-50 rounded-lg shadow-md p-6 w-full lg:max-w-xs max-w-sm mx-auto"
+    >
       {/* Подробная информация по вертикали */}
       <div className="space-y-4">
         {/* Период */}
@@ -23,7 +26,6 @@ const StakingPeriodCard = (options) => {
           <p className="text-gray-700 font-bold">Period:</p>
           <p className="text-blue-500 font-bold">
             {period}
-            {` days `}
           </p>
         </div>
         {/* APY */}
@@ -41,14 +43,19 @@ const StakingPeriodCard = (options) => {
         <div className="flex items-center justify-between border-b pb-2">
           <p className="text-gray-700 font-bold">Min deposit:</p>
           <p className="text-green-500 font-bold">
-            {minDeposit}{tokenSymbol}
+            {minDeposit} {tokenSymbol}
           </p>
         </div>
         
         {/* Количество застейканных токенов */}
         <div className="flex items-center justify-between border-b pb-2">
           <p className="text-gray-700 font-bold">Staked Tokens:</p>
-          <p className="text-orange-500 font-bold"><Counter>{fromWei(stakedTokens, decimals)}</Counter> {tokenSymbol}</p>
+          <p className="text-orange-500 font-bold">
+            <span className="block">
+              <Counter>{fromWei(stakedTokens, decimals)}</Counter>
+            </span>
+            <span className="block">{tokenSymbol}</span>
+          </p>
         </div>
         {/* Количество пользователей */}
         {/*
@@ -107,7 +114,10 @@ const StakingInfoBlock = (props) => {
                   href={getAddressLink(contractInfo.chainId, stakingTokenInfo.addr)}
                   target={`_blank`}
                 >
-                  <Counter>{fromWei(stakingTokenInfo.balance, stakingTokenInfo.decimals)}</Counter> {stakingTokenInfo.symbol}
+                  <div>
+                    <Counter>{fromWei(stakingTokenInfo.balance, stakingTokenInfo.decimals)}</Counter>
+                  </div>
+                  <div>{stakingTokenInfo.symbol}</div>
                 </a>
               ) : (
                 <p className="text-green-500 font-bold ml-4">{`...`}</p>
@@ -121,7 +131,10 @@ const StakingInfoBlock = (props) => {
                   href={getAddressLink(contractInfo.chainId, rewardTokenInfo.addr)}
                   target={`_blank`}
                 >
-                  <Counter>{fromWei(rewardTokenInfo.balance, rewardTokenInfo.decimals)}</Counter> {rewardTokenInfo.symbol}
+                  <div>
+                    <Counter>{fromWei(rewardTokenInfo.balance, rewardTokenInfo.decimals)}</Counter>
+                  </div>
+                  <div>{rewardTokenInfo.symbol}</div>
                 </a>
               ) : (
                 <p className="text-blue-500 font-bold ml-4">{`...`}</p>

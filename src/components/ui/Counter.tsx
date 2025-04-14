@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const Counter = ({ value, children, duration = 1000 }) => {
+const Counter = ({ value, children, duration = 1000, start = 0}) => {
   if (!value && children) value = Number(children)
   const [currentValue, setCurrentValue] = useState(0);
 
@@ -15,7 +15,7 @@ const Counter = ({ value, children, duration = 1000 }) => {
         clearInterval(timer);
         setCurrentValue(value); // Устанавливаем конечное значение
       } else {
-        const animatedValue = Math.round(value * ease(progress / duration));
+        const animatedValue = Math.round(value * ease(progress / duration), 4);
         setCurrentValue(animatedValue);
       }
     }, 16); // Приблизительно 60 FPS

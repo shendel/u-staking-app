@@ -314,9 +314,10 @@ contract StakeFactory is Ownable, Pausable, ReentrancyGuard {
         uint256 DepositeTokenTotal;
         uint256 LastUpdated;
         uint256[] LockableDays;
+        uint256[] DepositeTokens;
+        uint256[] DepositeTime;
         uint256 WithdrawedReward;
         uint256 WithdrawAbleReward;
-        uint256[] DepositeTime;
     }
 
     event Deposite_(address indexed to, address indexed From, uint256 amount, uint256 day, uint256 time);
@@ -416,7 +417,7 @@ contract StakeFactory is Ownable, Pausable, ReentrancyGuard {
 
             if (blockTime > lockTime) {
                 uint256 calculatedReward = (depositeToken[_address][z] * allocation[lockableDays[_address][z]]) / 10000;
-                calculatedReward /= 10**uint256(depositTokenDecimals);
+                calculatedReward = convertTokenAToTokenB(calculatedReward, depositTokenDecimals, rewardTokenDecimals);
 
                 totalReward += calculatedReward;
             }
@@ -429,6 +430,7 @@ contract StakeFactory is Ownable, Pausable, ReentrancyGuard {
         info = UserInfo({
             Address: user,
             DepositeTokenTotal: depositeTokensTotal[user],
+            DepositeTokens: depositeToken[user],
             LastUpdated: lastUpdated[user],
             LockableDays: lockableDays[user],
             WithdrawedReward: withdrawedReward[user],
@@ -471,7 +473,7 @@ contract StakeFactory is Ownable, Pausable, ReentrancyGuard {
 
                 if (blockTime > lockTime) {
                     uint256 reward = (depositeToken[msg.sender][_index[z]] * allocation[lockableDays[msg.sender][_index[z]]]) / 10000;
-                    reward /= 10**uint256(depositTokenDecimals);
+                    reward = convertTokenAToTokenB(reward, depositTokenDecimals, rewardTokenDecimals);
 
                     
                     totalReward += reward;
@@ -480,7 +482,6 @@ contract StakeFactory is Ownable, Pausable, ReentrancyGuard {
                     uint256 a;
                     if (deductionPercentage > 0) {
                         a = (depositeToken[msg.sender][_index[z]] * deductionPercentage) / 10000;
-                        a /= 10**uint256(depositTokenDecimals);
                     }
                     uint256 b = depositeToken[msg.sender][_index[z]] - a;
 
@@ -685,5 +686,23 @@ contract StakeFactory is Ownable, Pausable, ReentrancyGuard {
         isSpam[_addr] = false; // Снимаем отметку спама
     }
 
+    function convertTokenAToTokenB(
+        uint256 inAmountTokenA,
+        uint8 tokenADecimals,
+        uint8 tokenBDecimals
+    ) public pure returns (uint256 outAmountTokenB) {
+        if (tokenADecimals > tokenBDecimals) {
+            // Если у TokenA больше десятичных знаков, делим на 10^(разница)
+            uint256 difference = tokenADecimals - tokenBDecimals;
+            outAmountTokenB = inAmountTokenA / (10 ** difference);
+        } else if (tokenADecimals < tokenBDecimals) {
+            // Если у TokenB больше десятичных знаков, умножаем на 10^(разница)
+            uint256 difference = tokenBDecimals - tokenADecimals;
+            outAmountTokenB = inAmountTokenA * (10 ** difference);
+        } else {
+            // Если количество десятичных знаков одинаковое, просто возвращаем входное значение
+            outAmountTokenB = inAmountTokenA;
+        }
+    }
     receive() external payable{	}
 }

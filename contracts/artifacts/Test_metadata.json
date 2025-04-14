@@ -1,0 +1,109 @@
+{
+	"compiler": {
+		"version": "0.8.12+commit.f00d7308"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "inAmountTokenA",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint8",
+						"name": "tokenADecimals",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8",
+						"name": "tokenBDecimals",
+						"type": "uint8"
+					}
+				],
+				"name": "convertTokenAToTokenB",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "outAmountTokenB",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "stakeAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "apyPercentage",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint8",
+						"name": "stakeDecimals",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8",
+						"name": "rewardDecimals",
+						"type": "uint8"
+					}
+				],
+				"name": "testCalc",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "ret",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"rewardTest.sol": "Test"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": true,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"rewardTest.sol": {
+			"keccak256": "0xaf74482250d37725676fd9405ab729154ec2cdf67af387a000102aa81061a55b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://8b5afa2467154bf97415326f7699d5341ead198d6dcc9f668333dc94567c2fd5",
+				"dweb:/ipfs/QmUJ89fDG7mBjXuL1AccSA3aE9b56VbiJgukR9yzRuYLNp"
+			]
+		}
+	},
+	"version": 1
+}
