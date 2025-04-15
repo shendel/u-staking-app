@@ -1218,11 +1218,11 @@
 	},
 	"sources": {
 		"StakeFactory.sol": {
-			"keccak256": "0xfe06cf148645c48b9c5d29fc95a71c463a3e15d01d760c8661bd29b73ee7c8de",
+			"keccak256": "0x06cbc81a0bc6492b3116c1f1ea42a74d568f1aeea3e75bdb0ffca2bf1d13ad96",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0ca4942d1b08ddabd7a253a59fc72878e6f5d33548e0a8d11952ab88dcb27cfe",
-				"dweb:/ipfs/QmNUvBsEgizrctDiaDc3VKsLueqGxXLE4NK74tPT7bwvZw"
+				"bzz-raw://bb83e1fa2bd6371f11f4f13ef7222208d85e7324a218458c7011c5d2470b2293",
+				"dweb:/ipfs/QmR8gaz53CjzhwkToDnNKGS5eW3SHQ46wpzvJboKhaDMsG"
 			]
 		}
 	},

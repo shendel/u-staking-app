@@ -489,7 +489,9 @@ contract StakeFactory is Ownable, Pausable, ReentrancyGuard {
                     
                     deductionFee += a;
                 }
-                lockPeriodParams[_index[z]].stakedAmount -= depositeToken[msg.sender][_index[z]];
+                lockPeriodParams[
+                    lockableDays[msg.sender][_index[z]]
+                ].stakedAmount -= depositeToken[msg.sender][_index[z]];
                 depositedTokens -= depositeToken[msg.sender][_index[z]];
             }
         }
