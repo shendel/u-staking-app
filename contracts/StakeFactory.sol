@@ -510,15 +510,15 @@ contract StakeFactory is Ownable, Pausable, ReentrancyGuard {
 
         
         if (totalWithdrawAmount > 0) {
-            Token.transfer(msg.sender, totalWithdrawAmount / 10**uint256(depositTokenDecimals));
+            Token.transfer(msg.sender, totalWithdrawAmount);
         }
 
         if (totalReward > 0) {
-            rewardToken.transfer(msg.sender, totalReward / 10**uint256(rewardTokenDecimals));
+            rewardToken.transfer(msg.sender, totalReward);
         }
 
         if (deductionFee > 0) {
-            Token.transfer(taxreceiver, deductionFee / 10**uint256(depositTokenDecimals));
+            Token.transfer(taxreceiver, deductionFee);
         }
         depositeTokensTotal[msg.sender] = depositedTokens;
         withdrawedReward[msg.sender] += totalReward;

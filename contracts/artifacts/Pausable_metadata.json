@@ -88,11 +88,11 @@
 	},
 	"sources": {
 		"StakeFactory.sol": {
-			"keccak256": "0x06cbc81a0bc6492b3116c1f1ea42a74d568f1aeea3e75bdb0ffca2bf1d13ad96",
+			"keccak256": "0x154547f6628916dc1a87eaf397f8e180e0daa4b5691dfa0f812007e5f11d3e3b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://bb83e1fa2bd6371f11f4f13ef7222208d85e7324a218458c7011c5d2470b2293",
-				"dweb:/ipfs/QmR8gaz53CjzhwkToDnNKGS5eW3SHQ46wpzvJboKhaDMsG"
+				"bzz-raw://bd0d7cc00745fd5d117d13872024ea9b58cc1a03f9ae053f9476e24b2b00f907",
+				"dweb:/ipfs/QmcWEv64Xegs7s8JY8f8iwKyHxMrE7DWjD5LgosApvHjyB"
 			]
 		}
 	},
