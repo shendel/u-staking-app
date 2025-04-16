@@ -51,7 +51,7 @@ const fetchUserDeposits = (options) => {
             contractTimeMultiplier,
             blockchainTime
           } = mcAnswer
-
+console.log('>>> mcAnswer', mcAnswer)
           const periods = Object.keys(DepositeTime).map((index) => {
 
             const unlockTime = Number(DepositeTime[index]) + Number(LockableDays[index]) * Number(contractTimeMultiplier)
@@ -74,7 +74,7 @@ const fetchUserDeposits = (options) => {
             chainId,
             factoryAddress,
             userAddress,
-            periods,
+            periods: periods.reverse(),
             LastUpdated,
             pendingReward: WithdrawAbleReward,
             givedReward: WithdrawedReward,

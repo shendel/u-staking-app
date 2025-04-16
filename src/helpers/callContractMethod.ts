@@ -20,7 +20,7 @@ const callContractMethod = (options) => {
     activeWeb3.eth.getAccounts().then(async (accounts) => {
       if (accounts.length>0) {
         const activeWallet = accounts[0]
-
+console.log('>>> call callContractMethod', args)
         const sendArgs = await calcSendArgWithFee(
           activeWallet,
           contract,

@@ -90,7 +90,7 @@ const NETWORKS = {
     },
     rpc: "https://data-seed-prebsc-1-s2.binance.org:8545",
     explorer: "https://testnet.bscscan.com",
-    multicall: '0xe348b292e8eA5FAB54340656f3D374b259D658b8',
+    multicall: '0x5d311801328eCa19CfFBe917d9814C95710ce1b1',
     testnet: true,
   },
   matic: {

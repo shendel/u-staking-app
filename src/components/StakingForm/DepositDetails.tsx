@@ -45,7 +45,7 @@ const DepositDetails = (props) => {
             {rewardTokenInfo.symbol}
           </span>
         </div>
-        {deductionPercentage && (
+        {deductionPercentage != "0" && (
           <div className="grid grid-cols-2 gap-4 pb-1 pt-1 border-b border-gray-300">
             <span>{`Penalty for early withdrawal`}</span>
             <div className="text-right">

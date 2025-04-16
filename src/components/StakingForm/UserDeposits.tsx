@@ -118,7 +118,7 @@ export default function StakingFormUserDeposits(props) {
           <div>
             {`Do you really want to close this deposit before the unlock time?`}
           </div>
-          {(contractInfo.deductionPercentage) > 0 && (
+          {(contractInfo.deductionPercentage != "0") && (
             <div>
                {`In this case, you will have to pay a penalty of `}
                <span className="font-bold text-red-700">

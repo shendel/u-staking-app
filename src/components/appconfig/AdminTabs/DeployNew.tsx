@@ -211,7 +211,7 @@ const AdminTabsDeployNew = (props) => {
           {/* Выбор целевого блокчейна */}
           <div className="mb-2">
             <Label>{`1. Select Target Blockchain:`}</Label>
-            <SelectBlockchain value={deployChainId} onChange={(e) => handleChangeDeployChainId(e.target.value)} />
+            <SelectBlockchain value={deployChainId} onChange={(chainId) => handleChangeDeployChainId(chainId)} />
           </div>
 
           {/* Параметры стейкинга */}

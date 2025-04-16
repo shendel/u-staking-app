@@ -508,7 +508,6 @@ contract StakeFactory is Ownable, Pausable, ReentrancyGuard {
             depositeTime[msg.sender].pop();
         }
 
-        
         if (totalWithdrawAmount > 0) {
             Token.transfer(msg.sender, totalWithdrawAmount);
         }

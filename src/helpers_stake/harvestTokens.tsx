@@ -12,7 +12,7 @@ const harvestTokens = (options) => {
     onError = () => {},
     onFinally = () => {}
   } = options
-  
+  console.log('>>> harvestTokens', locksIndexes)
   const contract = new activeWeb3.eth.Contract(StakeFactoryJson.abi, stakeFactoryAddress)
   
   return callContractMethod({
