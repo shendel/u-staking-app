@@ -5,6 +5,8 @@ import React, { useState } from "react";
 import { useInjectedWeb3 } from '@/web3/InjectedWeb3Provider'
 import { fromWei } from '@/helpers/wei'
 
+import Button from '@/components/ui/Button'
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
@@ -14,6 +16,20 @@ const Header = () => {
     balance
   } = useInjectedWeb3()
   
+  const menuItems = [
+    {
+      title: 'Home',
+      href: '#/'
+    },
+    {
+      title: 'Item 1',
+      href: '#'
+    },
+    {
+      title: 'Item 2',
+      href: '#'
+    }
+  ]
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -58,18 +74,14 @@ const Header = () => {
 
         {/* Десктопная версия меню */}
         <nav className="hidden md:flex items-center gap-4">
-          <a href="#home" className="text-gray-700 hover:text-blue-500">
-            Home
-          </a>
-          <a href="#stake" className="text-gray-700 hover:text-blue-500">
-            Stake
-          </a>
-          <a href="#unstake" className="text-gray-700 hover:text-blue-500">
-            Unstake
-          </a>
-          <a href="#claim" className="text-gray-700 hover:text-blue-500">
-            Claim
-          </a>
+          {menuItems.map((item, key) => {
+            const { title, href } = item
+            return (
+              <a key={key} href={href} className="text-gray-700 hover:text-blue-500">
+                {title}
+              </a>
+            )
+          })}
           {/* Отображение кошелька */}
           <div className="relative">
             <ConnectWalletButton
@@ -120,29 +132,33 @@ const Header = () => {
             {/* Выпадающее меню */}
             {isMenuOpen && (
               <div
-                className="absolute right-0 mt-2 py-2 w-96 bg-slate-50 border border-gray-200 rounded shadow-lg z-10"
+                className="absolute p-4 right-0 mt-2 py-2 w-96 bg-slate-50 border border-gray-200 rounded shadow-lg z-10"
                 onMouseLeave={() => setIsMenuOpen(false)}
               >
-                <div className="px-4 py-2 text-gray-700">
+                <div className="py-2 text-gray-700 font-bold">
                   <p className="font-bold">Wallet Address:</p>
-                  <p className="truncate text-sm text-gray-600">{injectedAccount}</p>
+                  <p className="truncate text-sm text-blue-600">
+                    {injectedAccount}
+                  </p>
                 </div>
-                <div className="px-4 py-2 text-gray-700">
+                <div className="py-2 text-gray-700 font-bold">
                   <p className="font-bold">Balance:</p>
-                  <p className="text-sm text-green-500">{fromWei(balance)} ETH</p>
+                  <p className="text-sm text-blue-500">{fromWei(balance)} ETH</p>
                 </div>
                 <DisconnectWalletButton 
                   view={(handleDisconnect) => {
                     return (
-                      <button
+                      <Button
+                        fullWidth={true}
+                        color={`red`}
+                        isBold={true}
                         onClick={() => {
                           handleDisconnect()
                           setIsMenuOpen(false)
                         }}
-                        className="w-full px-4 py-2 text-red-500 hover:bg-gray-100"
                       >
                         Disconnect Wallet
-                      </button>
+                      </Button>
                     )
                   }}
                 />
@@ -184,200 +200,63 @@ const Header = () => {
 
             {/* Ссылки меню */}
             <ul className="mt-8 space-y-4">
-              <li>
-                <a
-                  href="#home"
-                  className="block text-gray-700 hover:text-blue-500 font-bold"
-                  onClick={toggleMenu}
-                >
-                  Home
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#stake"
-                  className="block text-gray-700 hover:text-blue-500 font-bold"
-                  onClick={toggleMenu}
-                >
-                  Stake
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#unstake"
-                  className="block text-gray-700 hover:text-blue-500 font-bold"
-                  onClick={toggleMenu}
-                >
-                  Unstake
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#claim"
-                  className="block text-gray-700 hover:text-blue-500 font-bold"
-                  onClick={toggleMenu}
-                >
-                  Claim
-                </a>
-              </li>
+              {menuItems.map((item, key) => {
+                const { title, href } = item
+                return (
+                  <li>
+                    <a
+                      key={key}
+                      href={href}
+                      className="block text-gray-700 hover:text-blue-500 font-bold"
+                      onClick={toggleMenu}
+                    >
+                      {title}
+                    </a>
+                  </li>
+                )
+              })}
             </ul>
           </div>
 
           {/* Нижняя часть меню */}
           <div>
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
-              onClick={toggleMenu}
-            >
-              Connect Wallet
-            </button>
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-  return (
-    <header className="bg-white shadow-md py-4">
-      <div className="container mx-auto px-4 flex justify-between items-center">
-        {/* Логотип */}
-        <div className="text-2xl font-bold text-blue-500">Logo</div>
-
-        {/* Навигационное меню */}
-        <nav className="flex items-center gap-4">
-          {/*
-          <ul className="flex gap-4 text-gray-700">
-            <li>
-              <a href="#" className="hover:text-blue-500">
-                Home
-              </a>
-            </li>
-            <li>
-              <a href="#stake" className="hover:text-blue-500">
-                Stake
-              </a>
-            </li>
-            <li>
-              <a href="#unstake" className="hover:text-blue-500">
-                Unstake
-              </a>
-            </li>
-            <li>
-              <a href="#claim" className="hover:text-blue-500">
-                Claim
-              </a>
-            </li>
-          </ul>
-          */}
-          {/* Отображение кошелька */}
-          <div className="relative">
             <ConnectWalletButton
               connectView={(isConnecting, openConnectModal) => {
                 return (
-                  <button
-                    disabled={isConnecting}
+                  <Button
+                    fullWidth={true}
+                    isDisabled={isConnecting}
                     onClick={openConnectModal}
-                    className="bg-blue-500 text-white px-4 py-2 rounded ml-4 md:ml-0 mt-4 md:mt-0 hover:bg-blue-600"
                   >
                     Connect Wallet
-                  </button>
+                  </Button>
                 )
               }}
               connectedView={(walletAddress) => {
                 return (
-                  <button
-                    onClick={toggleMenu}
-                    className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded hover:bg-gray-200"
+                  <Button
+                    fullWidth={true}
                   >
-                    <span>{`${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`}</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4 text-gray-600"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
+                    {`${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`}
+                  </Button>
                 )
               }}
               wrongChainView={(openChainModal) => {
                 return (
-                  <button
+                  <Button
+                    fullWidth={true}
                     onClick={openChainModal}
-                    className="bg-blue-500 text-white px-4 py-2 rounded ml-4 md:ml-0 mt-4 md:mt-0 hover:bg-blue-600"
                   >
                     Switch chain
-                  </button>
+                  </Button>
                 )
               }}
             />
-            {/* Выпадающее меню */}
-            {isMenuOpen && (
-              <div
-                className="absolute right-0 mt-2 py-2 w-96 bg-slate-50 border border-gray-200 rounded shadow-lg z-10"
-                onMouseLeave={() => setIsMenuOpen(false)}
-              >
-                <div className="px-4 py-2 text-gray-700">
-                  <p className="font-bold">Wallet Address:</p>
-                  <p className="truncate text-sm text-gray-600">{injectedAccount}</p>
-                </div>
-                <div className="px-4 py-2 text-gray-700">
-                  <p className="font-bold">Balance:</p>
-                  <p className="text-sm text-green-500">{fromWei(balance)} ETH</p>
-                </div>
-                <DisconnectWalletButton 
-                  view={(handleDisconnect) => {
-                    return (
-                      <button
-                        onClick={() => {
-                          handleDisconnect()
-                          setIsMenuOpen(false)
-                        }}
-                        className="w-full px-4 py-2 text-red-500 hover:bg-gray-100"
-                      >
-                        Disconnect Wallet
-                      </button>
-                    )
-                  }}
-                />
-              </div>
-            )}
           </div>
-        </nav>
+        </div>
       </div>
     </header>
   );
 };
 
 export default Header;
-/*
-export default function Header(props) {
-  return (
-    <header className="mainHeader">
-      <div>
-        <ConnectWalletButton
-          connectView={(isConnecting, openConnectModal) => {
-            return (
-              <button disabled={isConnecting} onClick={openConnectModal}>Do connect</button>
-            )
-          }}
-          connectedView={(address) => {
-            return (<div>[{address}]</div>)
-          }}
-          wrongChainView={(openChainModal) => {
-            return (
-              <button onClick={openChainModal}>
-                Switch chain
-              </button>
-            )
-          }}
-        />
-      </div>
-    </header>
-  )
-}
-*/

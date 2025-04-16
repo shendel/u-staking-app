@@ -236,7 +236,7 @@ const StakingFormNewDeposit = (props) => {
           onChange={handleCheckboxChange}
           className="mr-2"
         />
-        <label htmlFor="termsCheckbox" className="text-gray-700">
+        <label htmlFor="termsCheckbox" className="text-gray-700 cursor-pointer">
           I have read and I accept the{" "}
           <a href="#" className="text-blue-500 underline">
             terms and conditions
