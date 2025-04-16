@@ -58,6 +58,7 @@ const fetchUserDeposits = (options) => {
 
             const canClaim = (Number(blockchainTime) > unlockTime)
             return {
+              id: index,
               startFrom: DepositeTime[index],
               amount: DepositeTokens[index],
               days: LockableDays[index],

@@ -18,6 +18,7 @@ import { useStakeFactory } from '@/contexts/StakeFactoryContext'
 
 
 const StakingFormNewDeposit = (props) => {
+  const { onStake } = props
   const {
     injectedWeb3,
     injectedAccount,
@@ -36,6 +37,7 @@ const StakingFormNewDeposit = (props) => {
       stakingTokenInfo,
       rewardTokenInfo,
       lockPeriodsInfo,
+      deductionPercentage,
     },
     fetchFactoryInfo
   } = useStakeFactory()
@@ -130,7 +132,7 @@ const StakingFormNewDeposit = (props) => {
   
   const [ hasAmountError, setHasAmountError ] = useState(false)
   
-  const lockPeriods = lockPeriodsInfo.sort((a,b) => { return (a.lockTimeDays > b.lockTimeDays) ? 1 : -1 })
+  const lockPeriods = (lockPeriodsInfo) ? lockPeriodsInfo.sort((a,b) => { return (a.lockTimeDays > b.lockTimeDays) ? 1 : -1 }) : []
   const [ lockPeriodDetails, setLockPeriodDetails ] = useState(false)
   const [ lockPeriod, setLockPeriod ] = useState(0)
   
@@ -162,6 +164,7 @@ const StakingFormNewDeposit = (props) => {
       onSuccess: () => {
         setIsDepositiong(false)
         addNotification('success', 'Successfull deposited')
+        if (onStake) onStake()
         fetchFactoryInfo()
       },
       onError: () => {
@@ -175,9 +178,12 @@ const StakingFormNewDeposit = (props) => {
 
   return (
     <div>
-      <p className="text-center text-gray-500 mb-6">
-        Stake ETH and receive dETH while staking
-      </p>
+      <div className="block text-gray-700 font-bold mb-2 text-center text-xl ">
+        {`Stake `}
+        <span className="text-blue-600">{stakingTokenInfo.symbol}</span>
+        {` and receive `}
+        <span className="text-blue-600">{rewardTokenInfo.symbol}</span>
+      </div>
       <div className="mb-4">
         <label className="block text-gray-700 mb-2 font-bold">
           {`Deposit Lock period`}
@@ -214,6 +220,7 @@ const StakingFormNewDeposit = (props) => {
       {lockPeriodDetails && (stakeAmount > 0) && !hasAmountError && (
         <DepositDetails
           depositPeriod={lockPeriodDetails}
+          deductionPercentage={deductionPercentage}
           stakeAmount={stakeAmount}
           stakingTokenInfo={stakingTokenInfo}
           rewardTokenInfo={rewardTokenInfo}

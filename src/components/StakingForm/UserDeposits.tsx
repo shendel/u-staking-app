@@ -9,6 +9,8 @@ import harvestTokens from '@/helpers_stake/harvestTokens'
 import { useNotification } from "@/contexts/NotificationContext";
 import { useConfirmationModal } from "@/components/ConfirmationModal";
 import { getTransactionLink, getShortTxHash } from '@/helpers/etherscan'
+import UserDepositItem from './UserDepositItem'
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function StakingFormUserDeposits(props) {
   const {
@@ -69,16 +71,16 @@ export default function StakingFormUserDeposits(props) {
   }, [ injectedAccount, factoryAddress, chainId ])
   
   const [ isHarvesting, setIsHarvesting ] = useState(false)
-  const [ harvestingIndex, setHarvestiongIndex ] = useState(0)
+  const [ harvestingId, setHarvestiongId ] = useState(0)
   
-  const handleHarvest = (day, index, isClaim = true) => {
-    setHarvestiongIndex(index)
+  const handleHarvest = (day, id, isClaim = true) => {
+    setHarvestiongId(id)
     setIsHarvesting(true)
     addNotification('info', (isClaim) ? 'Claiming reward. Confirm transaction' : 'Withdrawing deposit. Confirm transaction')
     harvestTokens({
       activeWeb3: injectedWeb3,
       stakeFactoryAddress: factoryAddress,
-      locksIndexes: [ index ],
+      locksIndexes: [ id ],
       onTrx: (txHash) => {
         addNotification('info',
           (isClaim)
@@ -90,6 +92,8 @@ export default function StakingFormUserDeposits(props) {
       },
       onSuccess: () => {
         setIsHarvesting(false)
+        const newLocks = userLocks.filter(({ id: lockId }) => { return lockId != id })
+        setUserLocks([...newLocks])
         addNotification('success',
           (isClaim)
             ? 'Successfull claimed'
@@ -107,122 +111,76 @@ export default function StakingFormUserDeposits(props) {
     }).catch((err) => {})
   }
   
-  const handleWithdraw = (day, index) => {
-    handleHarvest(day, index, false)
+  const handleWithdraw = (day, id) => {
+    openModal({
+      description: (
+        <>
+          <div>
+            {`Do you really want to close this deposit before the unlock time?`}
+          </div>
+          {(contractInfo.deductionPercentage) > 0 && (
+            <div>
+               {`In this case, you will have to pay a penalty of `}
+               <span className="font-bold text-red-700">
+                {contractInfo.deductionPercentage / 100}{`%`}
+               </span>
+               {` of the deposit amount`}
+            </div>
+          )}
+        </>
+      ),
+      onConfirm: () => {
+        handleHarvest(day, id, false)
+      }
+    })
     // Do you really want to close this deposit before the unlock time? In this case, you will have to pay a penalty of 20% of the deposit amount
   }
   return (
     <div>
-      <p className="text-center text-gray-500 mb-6">
-        Select a staking period to unstake tokens
-      </p>
-
       {/* Список стейкинговых периодов */}
       <div>
-        <label className="block text-gray-700 font-bold mb-2">
-          You locks:
-        </label>
+        <span className="block text-gray-700 font-bold mb-2 text-center text-xl ">
+          You Deposits
+        </span>
         {(isFetchingPeriods && userLocks.length == 0) ? (
           <LoadingPlaceholder height={128}/>
         ) : (
           <>
             {userLocks.length > 0 ? (
-              <ul>
-                {userLocks.map((item, index) => {
-                  const {
-                    days,
-                    remaingDays,
-                    amount,
-                    canClaim
-                  } = item
-                  return (
-                    <li key={index} className="mb-4 bg-gray-100 p-4 rounded-lg">
-                      <div className="grid grid-cols-2 gap-4 font-bold text-gray-700 border-b pb-1">
-                        <span>
-                          {`Staked:`}
-                        </span>
-                        <p className="text-right text-orange-500">
-                          {fromWei(item.amount, stakingTokenInfo.decimals)}
-                          {` `}
-                          {stakingTokenInfo.symbol}
-                        </p>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 font-bold text-gray-700 border-b pb-1 pt-1">
-                        <span>
-                          {(canClaim) ? `Reward:` : `Remaining reward:`}
-                        </span>
-                        <span className="text-right text-orange-500">
-                          {fromWei(
-                            calculateReward({
-                              stakedAmountWei: item.amount,
-                              depositTokenDecimals: stakingTokenInfo.decimals,
-                              rewardTokenDecimals: rewardTokenInfo.decimals,
-                              apyBasisPoints: getApy(item.days)
-                            }),
-                            rewardTokenInfo.decimals
-                          )}
-                          {` `}
-                          {rewardTokenInfo.symbol}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 font-bold text-gray-700 border-b pb-1 pt-1">
-                        <span>
-                          {`APY:`}
-                        </span>
-                        <span className="font-bold text-right text-green-700">
-                          {getApy(days) / 100}%
-                        </span>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-4 font-bold text-gray-700 border-b pb-1 pt-1">
-                        <span>
-                          {`Lock period (days): `}
-                        </span>
-                        <span className="text-blue-500 text-right">{item.days}</span>
-                      </div>
-                      {canClaim ? (
-                        <div className="w-full">
-                          <Button
-                            color={`green`}
-                            fullWidth={true}
-                            isBold={true}
-                            isDisabled={(isHarvesting && (harvestingIndex != index))}
-                            isLoading={(isHarvesting && (harvestingIndex == index))}
-                            onClick={() => { handleHarvest(item.days, index) }}
-                          >
-                            {`Claim reward`}
-                          </Button>
-                        </div>
-                      ) : (
-                        <>
-                          <div className="grid grid-cols-2 gap-4 border-b pb-1 pt-1">
-                            <p className="font-bold text-gray-700">
-                              {`Remaining Days: `}
-                            </p>
-                            <span className="font-bold text-right text-blue-500">{item.remaingDays}</span>
-                          </div>
-                            <div className="w-full">
-                              <Button
-                                color={`red`}
-                                fullWidth={true}
-                                isBold={true}
-                                isDisabled={(isHarvesting && (harvestingIndex != index))}
-                                isLoading={(isHarvesting && (harvestingIndex == index))}
-                                onClick={() => { handleWithdraw(item.days, index) }}
-                              >
-                                {`Withdraw deposit`}
-                              </Button>
-                            </div>
-                        </>
-                      )}
-                    </li>
-                  )
-                })}
-              </ul>
+              <AnimatePresence>
+                <motion.ul
+                  initial={{ opacity: 0 }} // Начальное состояние (видимый блок)
+                  animate={{ opacity: 1, transition: { duration: 0.5 } }}
+                >
+                  <AnimatePresence>
+                  {userLocks.map((item, index) => {
+                    return (
+                      <UserDepositItem
+                        key={item.id}
+                        {...item}
+                        stakingTokenInfo={stakingTokenInfo}
+                        rewardTokenInfo={rewardTokenInfo}
+                        isHarvesting={isHarvesting}
+                        harvestingId={harvestingId}
+                        handleHarvest={handleHarvest}
+                        handleWithdraw={handleWithdraw}
+                        getApy={getApy}
+                      />
+                    )
+                  })}
+                  </AnimatePresence>
+                </motion.ul>
+              </AnimatePresence>
             ) : (
-              <div className="bg-yellow-100 border border-yellow-300 rounded-lg p-4 mb-2 text-center font-bold text-gray-700">
-                {`You dont have locked tokens`}
-              </div>
+              <AnimatePresence>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1, transition: { duration: 0.5 } }}
+                  className="bg-yellow-100 border border-yellow-300 rounded-lg p-4 mb-2 text-center font-bold text-gray-700"
+                >
+                  {`You dont have locked tokens`}
+                </motion.div>
+              </AnimatePresence>
             )}
           </>
         )}
