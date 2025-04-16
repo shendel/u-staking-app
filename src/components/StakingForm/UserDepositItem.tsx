@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { fromWei } from '@/helpers/wei'
 import calculateReward from '@/helpers_stake/calculateReward'
 import Button from '@/components/ui/Button'
+import { GET_CHAIN_BYID } from '@/web3/chains'
 
 const UserDepositItem = (props) => {
   const {
@@ -16,7 +17,10 @@ const UserDepositItem = (props) => {
     harvestingId,
     isHarvesting,
     handleHarvest,
-    handleWithdraw
+    handleWithdraw,
+    needSwithChain,
+    switchNetwork,
+    chainId,
   } = props
   return (
     <motion.li
@@ -68,39 +72,47 @@ const UserDepositItem = (props) => {
         </span>
         <span className="text-blue-500 text-right">{days}</span>
       </div>
-      {canClaim ? (
-        <div className="w-full">
-          <Button
-            color={`green`}
-            fullWidth={true}
-            isBold={true}
-            isDisabled={(isHarvesting && (harvestingId != id))}
-            isLoading={(isHarvesting && (harvestingId == id))}
-            onClick={() => { handleHarvest(days, id) }}
-          >
-            {`Claim reward`}
-          </Button>
-        </div>
+      {needSwithChain ? (
+        <Button isBold={true} fullWidth={true} onClick={() => { switchNetwork(chainId) }}>
+          {`Switch to "${GET_CHAIN_BYID(chainId).name}"`}
+        </Button>
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-4 border-b pb-1 pt-1">
-            <p className="font-bold text-gray-700">
-              {`Remaining Days: `}
-            </p>
-            <span className="font-bold text-right text-blue-500">{remaingDays}</span>
-          </div>
+          {canClaim ? (
             <div className="w-full">
               <Button
-                color={`red`}
+                color={`green`}
                 fullWidth={true}
                 isBold={true}
                 isDisabled={(isHarvesting && (harvestingId != id))}
                 isLoading={(isHarvesting && (harvestingId == id))}
-                onClick={() => { handleWithdraw(days, id) }}
+                onClick={() => { handleHarvest(days, id) }}
               >
-                {`Withdraw deposit`}
+                {`Claim reward`}
               </Button>
             </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 border-b pb-1 pt-1">
+                <p className="font-bold text-gray-700">
+                  {`Remaining Days: `}
+                </p>
+                <span className="font-bold text-right text-blue-500">{remaingDays}</span>
+              </div>
+                <div className="w-full">
+                  <Button
+                    color={`red`}
+                    fullWidth={true}
+                    isBold={true}
+                    isDisabled={(isHarvesting && (harvestingId != id))}
+                    isLoading={(isHarvesting && (harvestingId == id))}
+                    onClick={() => { handleWithdraw(days, id) }}
+                  >
+                    {`Withdraw deposit`}
+                  </Button>
+                </div>
+            </>
+          )}
         </>
       )}
     </motion.li>

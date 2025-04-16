@@ -10,6 +10,8 @@ import { useNotification } from "@/contexts/NotificationContext";
 import { useConfirmationModal } from "@/components/ConfirmationModal";
 import { getTransactionLink, getShortTxHash } from '@/helpers/etherscan'
 import BigNumber from "bignumber.js";
+import { GET_CHAIN_BYID } from '@/web3/chains'
+
 
 const StakingFormClaimReward = (props) => {
   const {
@@ -28,7 +30,9 @@ const StakingFormClaimReward = (props) => {
 
   const {
     injectedAccount,
+    injectedChainId,
     injectedWeb3,
+    switchNetwork,
   } = useInjectedWeb3()
 
   const { openModal } = useConfirmationModal();
@@ -150,9 +154,15 @@ const StakingFormClaimReward = (props) => {
                   </div>
                 </div>
               </div>
-              <Button color={`green`} fullWidth={true} isBold={true} isLoading={isHarvesting} onClick={handleClaim}>
-                {`Unlock deposits and Claim reward`}
-              </Button>
+              {injectedChainId != chainId ? (
+                <Button isBold={true} fullWidth={true} onClick={() => { switchNetwork(chainId) }}>
+                  {`Switch to "${GET_CHAIN_BYID(chainId).name}"`}
+                </Button>
+              ) : (
+                <Button color={`green`} fullWidth={true} isBold={true} isLoading={isHarvesting} onClick={handleClaim}>
+                  {`Unlock deposits and Claim reward`}
+                </Button>
+              )}
             </>
           ) : (
             <div

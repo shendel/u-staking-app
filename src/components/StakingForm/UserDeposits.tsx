@@ -30,6 +30,8 @@ export default function StakingFormUserDeposits(props) {
   const {
     injectedAccount,
     injectedWeb3,
+    injectedChainId,
+    switchNetwork,
   } = useInjectedWeb3()
 
   const { openModal } = useConfirmationModal();
@@ -164,6 +166,9 @@ export default function StakingFormUserDeposits(props) {
                         harvestingId={harvestingId}
                         handleHarvest={handleHarvest}
                         handleWithdraw={handleWithdraw}
+                        needSwithChain={(injectedChainId != chainId)}
+                        switchNetwork={switchNetwork}
+                        chainId={chainId}
                         getApy={getApy}
                       />
                     )
