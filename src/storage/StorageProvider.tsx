@@ -13,9 +13,14 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const parseInfo = (info) => {
   const parsed = {
     exdata: {},
+    mdRouters: [
+      { hash: '/about', url : './about.md' },
+      { hash: '/rules', url : './rules.md' }
+    ],
+    uStakeChainId: false,
+    uStakeContract: false,
   }
   const result = JSON.parse(info)
-  return result
   Object.keys(parsed).forEach((optKey) => {
     if (result[optKey]) parsed[optKey] = result[optKey]
   })

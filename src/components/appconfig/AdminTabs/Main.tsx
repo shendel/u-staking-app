@@ -65,7 +65,7 @@ const AdminTabsMain = (props) => {
     console.log('>>> ON PERIODS EDIT', isEditableArray)
   }
   const _fetchContractInfo = () => {
-    addNotification('info', 'Fetching contract info')
+    //addNotification('info', 'Fetching contract info')
     setContractInfo(false)
     setStakingTokenInfo(false)
     setRewardTokenInfo(false)
@@ -91,7 +91,7 @@ const AdminTabsMain = (props) => {
         setLockPeriods(lockPeriodsInfo)
         setLockPeriodsEditable([])
         setDeductionPercentage(deductionPercentage)
-        addNotification('success', 'Staking Factory contract information successfull fetched')
+        //addNotification('success', 'Staking Factory contract information successfull fetched')
       } else {
         addNotification('fail', 'Contract in app configuration is not Ultimate Staking Factory')
       }

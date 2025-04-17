@@ -3,6 +3,7 @@ import { DisconnectWalletButton } from '@/web3/DisconnectWalletButton'
 
 import React, { useState } from "react";
 import { useInjectedWeb3 } from '@/web3/InjectedWeb3Provider'
+import { useStorageProvider } from '@/storage/StorageProvider'
 import { fromWei } from '@/helpers/wei'
 
 import Button from '@/components/ui/Button'
@@ -10,6 +11,7 @@ import Button from '@/components/ui/Button'
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
+  const { isOwner } = useStorageProvider()
   const {
     injectedAccount,
     injectedChainId,
@@ -22,13 +24,23 @@ const Header = () => {
       href: '#/'
     },
     {
-      title: 'Item 1',
-      href: '#'
+      title: 'About',
+      href: '#/about'
+    },
+    {
+      title: 'Rules',
+      href: '#/rules'
     },
     {
       title: 'Item 2',
       href: '#'
-    }
+    },
+    ...((isOwner) ? [
+      {
+        title: 'Settings',
+        href: '#/settings'
+      }
+    ] : [])
   ]
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -45,7 +57,7 @@ const Header = () => {
       {/* Десктопная версия меню */}
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         {/* Логотип */}
-        <div className="text-2xl font-bold text-blue-500">Liquo</div>
+        <div className="text-2xl font-bold text-blue-500 pr-8">Logo</div>
 
         {/* Мобильная версия (гамбургер-меню) */}
         <div className="md:hidden">
@@ -73,15 +85,17 @@ const Header = () => {
         </div>
 
         {/* Десктопная версия меню */}
-        <nav className="hidden md:flex items-center gap-4">
-          {menuItems.map((item, key) => {
-            const { title, href } = item
-            return (
-              <a key={key} href={href} className="text-gray-700 hover:text-blue-500">
-                {title}
-              </a>
-            )
-          })}
+        <nav className="flex hidden md:flex item-center gap-4 justify-between w-full">
+          <div className="flex items-center gap-4">
+            {menuItems.map((item, key) => {
+              const { title, href } = item
+              return (
+                <a key={key} href={href} className="text-gray-700 hover:text-blue-500 font-bold">
+                  {title}
+                </a>
+              )
+            })}
+          </div>
           {/* Отображение кошелька */}
           <div className="relative">
             <ConnectWalletButton
@@ -203,9 +217,8 @@ const Header = () => {
               {menuItems.map((item, key) => {
                 const { title, href } = item
                 return (
-                  <li>
+                  <li key={key}>
                     <a
-                      key={key}
                       href={href}
                       className="block text-gray-700 hover:text-blue-500 font-bold"
                       onClick={toggleMenu}
