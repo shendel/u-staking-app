@@ -10,8 +10,10 @@ const MarkdownRenderer = ({ url }) => {
     // Загружаем Markdown-файл по URL
     const fetchMarkdown = async () => {
       try {
+        console.log('>>>> MarkDownViewer - begin load', url)
         const response = await axios.get(url);
         setMarkdown(response.data); // Сохраняем содержимое файла
+        console.log('>>> Is loaded')
       } catch (error) {
         console.error("Ошибка при загрузке Markdown:", error);
         setMarkdown("Ошибка загрузки Markdown-файла.");

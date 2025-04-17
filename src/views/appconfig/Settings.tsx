@@ -9,6 +9,9 @@ import AdminTabsDeployNew from '@/components/appconfig/AdminTabs/DeployNew'
 import AdminTabsMain from '@/components/appconfig/AdminTabs/Main'
 import AdminTabsSetupExistsContract from '@/components/appconfig/AdminTabs/SetupExistsContract'
 
+
+import AdminTabsRouters from '@/components/appconfig/AdminTabs/Routers'
+
 import { useStorageProvider } from '@/storage/StorageProvider'
 import { useStoragePreloader } from '@/storage/StoragePreloader'
 
@@ -47,9 +50,33 @@ export default function AppConfigSettings(props) {
   
   const adminTabs = [
     { key: "main", title: "Staking contract" },
-    { key: "menu", title: "Menu", disabled: true }
+    { key: "menu", title: "Menu", disabled: true },
+    { key: 'routers', title: 'URL Routers' },
   ]
 
+  const handleSaveRouters = (newRouters) => {
+    console.log('>>> save routers', newRouters)
+    openModal({
+      description: `Do you really want save new routers configuration?`,
+      onConfirm: () => {
+        saveStorage({
+          onBegin: () => {
+            addNotification('info', 'Saving app config. Confirm transaction')
+          },
+          onReady: () => {
+            addNotification('success', 'App config successfull saved')
+            doReloadStorage()
+          },
+          onError: () => {
+            addNotification('error', 'Fail save app configuration to storage')
+          }, 
+          newData: {
+            mdRouters: newRouters
+          }
+        })
+      }
+    })
+  }
   const handleSaveContract = (options) => {
     const {
       stakingChainId,
@@ -123,6 +150,9 @@ export default function AppConfigSettings(props) {
                 <AdminTabsSetupExistsContract onSaveContract={handleSaveContract} />
               )}
             </Tabs>
+          )}
+          {activeTab == 'routers' && (
+            <AdminTabsRouters onSaveRouters={handleSaveRouters} />
           )}
         </Tabs>
       </div>

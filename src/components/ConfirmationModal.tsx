@@ -5,12 +5,14 @@ import { createContext, useContext, useState, useEffect } from "react";
 // Создаем контекст для модального окна
 const ConfirmationModalContext = createContext({
   openModal: () => {},
+  closeModal: () => {}
 });
 
 // Хук для доступа к контексту
 export const useConfirmationModal = () => {
   return useContext(ConfirmationModalContext);
 };
+
 
 // Компонент модального окна
 export default function ConfirmationModal({ children }) {
@@ -22,7 +24,11 @@ export default function ConfirmationModal({ children }) {
     cancelTitle: "Cancel",
     onConfirm: null,
     onCancel: null,
-    isAlert: false
+    isAlert: false,
+    content: null,
+    hideBottomButtons: false,
+    hideClose: false,
+    fullWidth: false,
   });
 
   // Отложенное обновление состояния через useEffect
@@ -38,7 +44,11 @@ export default function ConfirmationModal({ children }) {
         cancelTitle: options.cancelTitle || "Cancel",
         onConfirm: options.onConfirm || null,
         onCancel: options.onCancel || null,
-        isAlert: options.isAlert || false
+        isAlert: options.isAlert || false,
+        content: options.content || null,
+        hideBottomButtons: options.hideBottomButtons || false,
+        hideCloseButton: options.hideCloseButton || false,
+        fullWidth: options.fullWidth || false
       });
       setIsOpened(true); // Безопасно открываем окно после завершения рендера
       setPendingOpen(false); // Сбрасываем флаг
@@ -61,9 +71,14 @@ export default function ConfirmationModal({ children }) {
     if (modalData.onCancel) modalData.onCancel(); // Выполняем callback при отмене
     setIsOpened(false); // Закрываем окно
   };
-
+  const closeModal = (callbacks) => {
+    const { doCancel, doConfirm, data = false} = callbacks
+    if (doConfirm && modalData.onConfirm) modalData.onConfirm(data); // Выполняем callback при подтверждении
+    if (doCancel && modalData.onCancel) modalData.onCancel(data); // Выполняем callback при отмене
+    setIsOpened(false)
+  }
   return (
-    <ConfirmationModalContext.Provider value={{ openModal }}>
+    <ConfirmationModalContext.Provider value={{ openModal, closeModal }}>
       {children}
 
       {/* Анимированный показ/скрытие модального окна */}
@@ -82,61 +97,74 @@ export default function ConfirmationModal({ children }) {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="bg-white rounded-lg p-6 shadow-lg w-full max-w-md relative"
+              className={`bg-white rounded-lg p-6 shadow-lg w-full ${(modalData.fullWidth) ? 'max-w-4xl' : 'max-w-md'} relative`}
             >
               {/* Заголовок */}
               <h2 className="text-2xl font-bold text-center mb-4">{modalData.title}</h2>
-
-              {/* Описание */}
-              <div className="text-gray-700 text-center mb-6">{modalData.description}</div>
-
-              {/* Кнопки управления */}
-              {modalData.isAlert ? (
-                <div className="grid place-items-center">
-                  <button
-                    onClick={handleCancel}
-                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                  >
-                    {modalData.okTitle || "Ok"}
-                  </button>
+            
+              
+              {modalData.content == null ? (
+                <div className="text-gray-700 text-center mb-6">
+                  {modalData.description}
                 </div>
               ) : (
-                <div className="flex justify-end gap-4">
-                  <button
-                    onClick={handleCancel}
-                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                  >
-                    {modalData.cancelTitle || "Cancel"}
-                  </button>
-                  <button
-                    onClick={handleConfirm}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                  >
-                    {modalData.okTitle || "Confirm"}
-                  </button>
+                <div>
+                  {modalData.content}
                 </div>
+              )}
+              
+              {!modalData.hideBottomButtons && (
+                <>
+                  {modalData.isAlert ? (
+                    <div className="grid place-items-center">
+                      <button
+                        onClick={handleCancel}
+                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                      >
+                        {modalData.okTitle || "Ok"}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex justify-end gap-4">
+                      <button
+                        onClick={handleCancel}
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                      >
+                        {modalData.cancelTitle || "Cancel"}
+                      </button>
+                      <button
+                        onClick={handleConfirm}
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                      >
+                        {modalData.okTitle || "Confirm"}
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
 
               {/* Кнопка закрытия */}
-              <button
-                onClick={handleCancel}
-                className="absolute top-2 right-2 focus:outline-none"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-gray-500 hover:text-gray-700"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+              {!modalData.hideCloseButton && (
+                <button
+                  onClick={handleCancel}
+                  className="absolute top-2 right-2 focus:outline-none"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 text-gray-500 hover:text-gray-700"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              )}
             </motion.div>
           </motion.div>
         )}

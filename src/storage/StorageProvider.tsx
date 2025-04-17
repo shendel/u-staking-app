@@ -14,8 +14,8 @@ const parseInfo = (info) => {
   const parsed = {
     exdata: {},
     mdRouters: [
-      { hash: '/about', url : './about.md' },
-      { hash: '/rules', url : './rules.md' }
+      { title: 'Home page', url: '/', type: 'ROUTER_HOME', readonly: true },
+      { title: 'About', url: '/about', type: 'ROUTER_MD', markdownSource: './about.md' },
     ],
     uStakeChainId: false,
     uStakeContract: false,

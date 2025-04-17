@@ -46,8 +46,16 @@ function MyStakeApp(pageProps) {
     if (storageData && !storageIsLoading) {
       if (storageData.mdRouters) {
         const newMdRouters = {}
-        storageData.mdRouters.forEach(({ hash, url }) => {
-          newMdRouters[hash] = MarkDownViewer(url)
+        storageData.mdRouters.forEach((router) => {
+          const {
+            title,
+            url,
+            type,
+            markdownSource
+          } = router
+          if (type == `ROUTER_MD`) {
+            newMdRouters[url] = MarkDownViewer(markdownSource)
+          }
         })
         console.log('>>> new Md routers', newMdRouters)
         setMdRouters(newMdRouters)
