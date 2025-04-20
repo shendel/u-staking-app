@@ -7,19 +7,12 @@ import STORAGE_JSON from './abi/Storage.json'
 import EX_STORAGE_JSON from "./abi/ExStorage.json"
 import { useStorageContract, useExStorageContract } from './useContract'
 import { useStoragePreloader } from './StoragePreloader'
+import STORAGE_DATA from '@/constants/STORAGE_DATA'
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 const parseInfo = (info) => {
-  const parsed = {
-    exdata: {},
-    mdRouters: [
-      { title: 'Home page', url: '/', type: 'ROUTER_HOME', readonly: true },
-      { title: 'About', url: '/about', type: 'ROUTER_MD', markdownSource: './about.md' },
-    ],
-    uStakeChainId: false,
-    uStakeContract: false,
-  }
+  const parsed = { ... STORAGE_DATA }
   const result = JSON.parse(info)
   Object.keys(parsed).forEach((optKey) => {
     if (result[optKey]) parsed[optKey] = result[optKey]

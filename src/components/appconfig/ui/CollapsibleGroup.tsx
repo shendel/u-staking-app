@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const CollapsibleGroup = ({ title, children }) => {
+const CollapsibleGroup = ({ title, children, noPadds = false }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Обработчик клика по заголовку
@@ -34,7 +34,7 @@ const CollapsibleGroup = ({ title, children }) => {
 
       {/* Контент группы */}
       {isExpanded && (
-        <div className="bg-white p-4 rounded-b-lg shadow-md border border-t-0 border-gray-300">
+        <div className={`bg-white ${(noPadds) ? '' : 'p-4'} rounded-b-lg shadow-md border border-t-0 border-gray-300`}>
           {children}
         </div>
       )}
