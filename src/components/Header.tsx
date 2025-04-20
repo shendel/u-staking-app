@@ -11,7 +11,12 @@ import Button from '@/components/ui/Button'
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
-  const { isOwner } = useStorageProvider()
+  const {
+    isOwner,
+    storageData: {
+      headerMenu,
+    }
+  } = useStorageProvider()
   const {
     injectedAccount,
     injectedChainId,
@@ -19,29 +24,22 @@ const Header = () => {
   } = useInjectedWeb3()
   
   const menuItems = [
-    {
-      title: 'Home',
-      href: '#/'
-    },
-    {
-      title: 'About',
-      href: '#/about'
-    },
-    {
-      title: 'Rules',
-      href: '#/rules'
-    },
-    {
-      title: 'Item 2',
-      href: '#'
-    },
-    ...((isOwner) ? [
+    ...(headerMenu || [
       {
-        title: 'Settings',
-        href: '#/settings'
-      }
-    ] : [])
+        title: 'Home',
+        url: '#/'
+      },
+      {
+        title: 'About',
+        url: '#/about'
+      },
+    ]),
+    ... ((isOwner) ? [{
+      title: 'Settings',
+      url: '#/settings'
+    }] : [])
   ]
+  
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -88,9 +86,9 @@ const Header = () => {
         <nav className="flex hidden md:flex item-center gap-4 justify-between w-full">
           <div className="flex items-center gap-4">
             {menuItems.map((item, key) => {
-              const { title, href } = item
+              const { title, url } = item
               return (
-                <a key={key} href={href} className="text-gray-700 hover:text-blue-500 font-bold">
+                <a key={key} href={url} className="text-gray-700 hover:text-blue-500 font-bold">
                   {title}
                 </a>
               )
@@ -215,11 +213,11 @@ const Header = () => {
             {/* Ссылки меню */}
             <ul className="mt-8 space-y-4">
               {menuItems.map((item, key) => {
-                const { title, href } = item
+                const { title, url } = item
                 return (
                   <li key={key}>
                     <a
-                      href={href}
+                      href={url}
                       className="block text-gray-700 hover:text-blue-500 font-bold"
                       onClick={toggleMenu}
                     >

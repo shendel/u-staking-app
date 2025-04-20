@@ -1,6 +1,16 @@
 import React from "react";
+import { useStorageProvider } from '@/storage/StorageProvider'
+import SocialIcon from './SocialIcon'
+
 
 const Footer = () => {
+  const {
+    storageData: {
+      footerMenu,
+      socialLinks
+    }
+  } = useStorageProvider()
+
   return (
     <footer className="bg-white py-8 mt-4 border-t-2 pt-8">
       <div className="container mx-auto px-4">
@@ -16,26 +26,43 @@ const Footer = () => {
           </div>
 
           {/* Навигация */}
-          <nav className="mb-6 md:mb-0">
-            <ul className="flex space-x-4 font-bold">
-              <li><a href="#" className="text-gray-700 hover:text-gray-900">Home</a></li>
-              <li><a href="#" className="text-gray-700 hover:text-gray-900">About Us</a></li>
-              <li><a href="#" className="text-gray-700 hover:text-gray-900">Terms of Service</a></li>
-              <li><a href="#" className="text-gray-700 hover:text-gray-900">Contact Us</a></li>
-            </ul>
-          </nav>
+          <div>
+            <nav className="mb-6 md:mb-0">
+              <ul className="flex space-x-4 font-bold justify-end">
+                {footerMenu.map((item, key) => {
+                  const { title, url, blank } = item
+                  return (
+                    <li key={key}>
+                      <a
+                        href={url}
+                        className="text-gray-700 hover:text-gray-900"
+                      >
+                        {title}
+                      </a>
+                    </li>
+                  )
+                })}
+              </ul>
+            </nav>
 
           {/* Социальные сети */}
-          {/*
-          <div>
-            <a href="#" className="text-gray-700 hover:text-gray-900">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l-6-6m0 0l6-6m-6 6h.01M12 12l6 6m0 0l6-6" />
-              </svg>
-              Follow us on social media
-            </a>
+          {socialLinks.length > 0 && (
+            <div>
+              {`Follow us on social media`}
+              <div className="flex justify-center">
+                {socialLinks.map((item, key) => {
+                  const { socialType, title, url } = item
+                  return (
+                    <a key={key} target={`_blank`} href={url} className="text-gray-700 hover:text-gray-900" alt={title} title={title}>
+                      <SocialIcon type={socialType} />
+                    </a>
+                  )
+                })}
+              </div>
+            </div>
+          )}
           </div>
-          */}
+          
         </div>
 
         {/* Нижняя часть - Copyright */}

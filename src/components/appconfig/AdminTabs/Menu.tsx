@@ -50,7 +50,8 @@ const AdminTabsMenu = (props) => {
                 'TELEGRAM' : 'Telegram',
                 'X.COM' : 'X (twitter)',
                 'GITHUB': 'GitHub',
-                'FACEBOOK': 'FaceBook'
+                'FACEBOOK': 'FaceBook',
+                'LINKEDIN': 'LinkedIn'
               }
             }
           }}

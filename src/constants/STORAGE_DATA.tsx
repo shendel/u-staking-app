@@ -3,16 +3,16 @@ const STORAGE_DATA = {
   uStakeChainId: false,
   uStakeContract: false,
   mdRouters: [
-    { title: 'Home page', url: '/', type: 'ROUTER_HOME', readonly: true },
-    { title: 'About', url: '/about', type: 'ROUTER_MD', markdownSource: './about.md' },
+    { title: 'Home page', url: '#/', type: 'ROUTER_HOME', readonly: true },
+    { title: 'About', url: '#/about', type: 'ROUTER_MD', markdownSource: './about.md' },
   ],
   headerMenu: [
-    { title: 'Home', url: '/' },
-    { title: 'About', url: '/about' }
+    { title: 'Home', url: '#/' },
+    { title: 'About', url: '#/about' }
   ],
   footerMenu: [
-    { title: 'Home', url: '/' },
-    { title: 'About', url: '/about' },
+    { title: 'Home', url: '#/' },
+    { title: 'About', url: '#/about' },
     { title: 'GitHub', url: 'https://github.com/shendel', blank: true }
   ],
   socialLinks: [
