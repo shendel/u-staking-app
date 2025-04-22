@@ -2,14 +2,21 @@ import React from "react";
 import { useStorageProvider } from '@/storage/StorageProvider'
 import SocialIcon from './SocialIcon'
 
-
+const formatUrl = (href) => {
+  if (href.substr(0,1) == '/') return `#${href}`
+  return href
+}
 const Footer = () => {
   const {
     storageData: {
       footerMenu,
-      socialLinks
+      socialLinks,
+      exdata: {
+        whitelabel,
+      }
     }
   } = useStorageProvider()
+  
 
   return (
     <footer className="bg-white py-8 mt-4 border-t-2 pt-8">
@@ -21,7 +28,7 @@ const Footer = () => {
             <img src="logo.png" alt="Staking Platform Logo" className="h-12 mb-4" />
             */}
             <p className="text-sm text-gray-500">
-              Staking platform for managing your blockchain assets securely and efficiently.
+              {whitelabel.footerSlogan}
             </p>
           </div>
 
@@ -34,8 +41,9 @@ const Footer = () => {
                   return (
                     <li key={key}>
                       <a
-                        href={url}
+                        href={formatUrl(url)}
                         className="text-gray-700 hover:text-gray-900"
+                        {...((blank) ? { target: '_blank' } : {})}
                       >
                         {title}
                       </a>
@@ -67,7 +75,7 @@ const Footer = () => {
 
         {/* Нижняя часть - Copyright */}
         <div className="mt-8 border-t border-gray-200 pt-4 text-center text-sm text-gray-500">
-          &copy; {new Date().getFullYear()} Staking Platform. All rights reserved.
+          {whitelabel.footerCopyright.replace('[YEAR]', new Date().getFullYear())}
         </div>
       </div>
     </footer>

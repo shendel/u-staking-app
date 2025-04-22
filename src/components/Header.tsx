@@ -8,6 +8,10 @@ import { fromWei } from '@/helpers/wei'
 
 import Button from '@/components/ui/Button'
 
+const formatUrl = (href) => {
+  if (href.substr(0,1) == '/') return `#${href}`
+  return href
+}
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
@@ -15,6 +19,9 @@ const Header = () => {
     isOwner,
     storageData: {
       headerMenu,
+      exdata: {
+        whitelabel,
+      }
     }
   } = useStorageProvider()
   const {
@@ -55,8 +62,11 @@ const Header = () => {
       {/* Десктопная версия меню */}
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         {/* Логотип */}
-        <div className="text-2xl font-bold text-blue-500 pr-8">Logo</div>
-
+        {whitelabel.siteLogo ? (
+          <img src={whitelabel.siteLogo} style={{maxHeight: '32px'}} className="pr-8" />
+        ) : (
+          <div className="text-2xl font-bold text-blue-500 pr-8">Logo</div>
+        )}
         {/* Мобильная версия (гамбургер-меню) */}
         <div className="md:hidden">
           <button
@@ -86,9 +96,14 @@ const Header = () => {
         <nav className="flex hidden md:flex item-center gap-4 justify-between w-full">
           <div className="flex items-center gap-4">
             {menuItems.map((item, key) => {
-              const { title, url } = item
+              const { title, url, blank} = item
               return (
-                <a key={key} href={url} className="text-gray-700 hover:text-blue-500 font-bold">
+                <a
+                  key={key}
+                  href={formatUrl(url)}
+                  className="text-gray-700 hover:text-blue-500 font-bold"
+                  {...((blank) ? {target:'_blank'} : {})}
+                >
                   {title}
                 </a>
               )
@@ -213,13 +228,14 @@ const Header = () => {
             {/* Ссылки меню */}
             <ul className="mt-8 space-y-4">
               {menuItems.map((item, key) => {
-                const { title, url } = item
+                const { title, url, blank } = item
                 return (
                   <li key={key}>
                     <a
-                      href={url}
+                      href={formatUrl(url)}
                       className="block text-gray-700 hover:text-blue-500 font-bold"
                       onClick={toggleMenu}
+                      {...((blank) ? { target: '_blank' } : {})}
                     >
                       {title}
                     </a>

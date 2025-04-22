@@ -10,6 +10,7 @@ import StakingInfoBlock from '@/components/StakingInfoBlock'
 import ConnectWalletButton from '@/components/ConnectWalletButton'
 import SetupAppForm from '@/components/appconfig/SetupAppForm'
 import fetchStakeFactory from '@/helpers_stake/fetchStakeFactory'
+import Head from "next/head";
 
 export default function Home(props) {
   const {
@@ -23,6 +24,14 @@ export default function Home(props) {
   } = useInjectedWeb3()
 
   const {
+    storageData: {
+      exdata: {
+        whitelabel,
+      }
+    }
+  } = useStorageProvider()
+  
+  const {
     isFetchingFactory,
     isFactoryError,
     contractInfo,
@@ -34,6 +43,9 @@ console.log('>>> Home fetchFactoryInfo', fetchFactoryInfo)
   }  
   return (
     <>
+      <Head>
+        <title>{whitelabel.siteTitle.replace('[PAGE_TITLE]', 'Home')}</title>
+      </Head>
       <StakingInfoBlock
         isFetchingFactory={isFetchingFactory}
         isFactoryError={isFactoryError}

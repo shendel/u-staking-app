@@ -11,12 +11,14 @@ import AdminTabsSetupExistsContract from '@/components/appconfig/AdminTabs/Setup
 
 import AdminTabsMenu from '@/components/appconfig/AdminTabs/Menu'
 import AdminTabsRouters from '@/components/appconfig/AdminTabs/Routers'
+import AdminTabsWhiteLabel from '@/components/appconfig/AdminTabs/WhiteLabel'
+
 
 import { useStorageProvider } from '@/storage/StorageProvider'
 import { useStoragePreloader } from '@/storage/StoragePreloader'
 
 import { GET_CHAIN_BYID } from '@/web3/chains'
-
+import Head from "next/head";
 
 export default function AppConfigSettings(props) {
   const {
@@ -33,6 +35,7 @@ export default function AppConfigSettings(props) {
     owner,
     storageIsLoading,
     saveStorage,
+    saveExStorage,
     doReloadStorage,
     storageData,
     storageData: {
@@ -52,8 +55,36 @@ export default function AppConfigSettings(props) {
     { key: "main", title: "Staking contract" },
     { key: "menu", title: "Menu" },
     { key: 'routers', title: 'URL Routers' },
+    { key: 'whitelabel', title: 'Whitelabel' }
   ]
 
+  const handleSaveExStorage = (options) => {
+    const {
+      message,
+      key,
+      newData,
+    } = options
+
+    openModal({
+      description: message,
+      onConfirm: () => {
+        saveExStorage({
+          onBegin: () => {
+            addNotification('info', 'Saving app config. Confirm transaction')
+          },
+          onReady: () => {
+            addNotification('success', 'App config successfull saved')
+            doReloadStorage()
+          },
+          onError: () => {
+            addNotification('error', 'Fail save app configuration to storage')
+          },
+          key,
+          newData
+        })
+      }
+    })
+  }
   const handleSaveStorage = (options) => {
     const {
       message,
@@ -154,6 +185,9 @@ export default function AppConfigSettings(props) {
   }
   return (
     <div className="p-6 pt-8">
+      <Head>
+        <title>uStaking App - Configuration</title>
+      </Head>
       <div className="bg-white rounded-lg shadow-md p-4 w-full max-w-4xl mx-auto">
         <h2 className="text-2xl font-bold mb-4">Admin Panel</h2>
         <Tabs
@@ -182,6 +216,9 @@ export default function AppConfigSettings(props) {
           )}
           {activeTab == 'routers' && (
             <AdminTabsRouters onSaveRouters={handleSaveRouters} />
+          )}
+          {activeTab == 'whitelabel' && (
+            <AdminTabsWhiteLabel handleSaveExStorage={handleSaveExStorage} />
           )}
         </Tabs>
       </div>

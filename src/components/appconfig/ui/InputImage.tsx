@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import FaIcon from '@/components/FaIcon'
 
-const Input = (props) => {
+const InputImage = (props) => {
   const {
     value,
     setValue,
@@ -13,6 +13,7 @@ const Input = (props) => {
     hasLink,
     buttons
   } = props
+
   
   return (
     <div className=" w-full flex items-center space-x-2">
@@ -54,4 +55,4 @@ const Input = (props) => {
   );
 };
 
-export default Input;
+export default InputImage;
