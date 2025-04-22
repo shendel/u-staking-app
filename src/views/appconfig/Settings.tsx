@@ -12,7 +12,7 @@ import AdminTabsSetupExistsContract from '@/components/appconfig/AdminTabs/Setup
 import AdminTabsMenu from '@/components/appconfig/AdminTabs/Menu'
 import AdminTabsRouters from '@/components/appconfig/AdminTabs/Routers'
 import AdminTabsWhiteLabel from '@/components/appconfig/AdminTabs/WhiteLabel'
-
+import AdminTabsTextBlocks from '@/components/appconfig/AdminTabs/TextBlocks'
 
 import { useStorageProvider } from '@/storage/StorageProvider'
 import { useStoragePreloader } from '@/storage/StoragePreloader'
@@ -55,7 +55,8 @@ export default function AppConfigSettings(props) {
     { key: "main", title: "Staking contract" },
     { key: "menu", title: "Menu" },
     { key: 'routers', title: 'URL Routers' },
-    { key: 'whitelabel', title: 'Whitelabel' }
+    { key: 'whitelabel', title: 'Whitelabel' },
+    { key: 'homepage', title: 'Text blocks' }
   ]
 
   const handleSaveExStorage = (options) => {
@@ -219,6 +220,9 @@ export default function AppConfigSettings(props) {
           )}
           {activeTab == 'whitelabel' && (
             <AdminTabsWhiteLabel handleSaveExStorage={handleSaveExStorage} />
+          )}
+          {activeTab == 'homepage' && (
+            <AdminTabsTextBlocks handleSaveExStorage={handleSaveExStorage} />
           )}
         </Tabs>
       </div>

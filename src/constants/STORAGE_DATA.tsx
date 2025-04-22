@@ -27,6 +27,18 @@ export const STORAGE_EX_DATA = {
     siteLogo: './assets/logo.png',
     footerSlogan: 'Staking platform for managing your blockchain assets securely and efficiently.',
     footerCopyright: '© [YEAR] Staking Platform. All rights reserved.'
+  },
+  homepage_topBlock: {
+    enabled: 0,
+    content: ``
+  },
+  homepage_middleBlock: {
+    enabled: 0,
+    content: ``
+  },
+  homepage_bottomBlock: {
+    enabled: 0,
+    content: ``
   }
 }
 
