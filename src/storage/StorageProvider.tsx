@@ -5,9 +5,14 @@ import { calcSendArgWithFee } from "@/helpers/calcSendArgWithFee"
 import { getCurrentDomain } from '@/helpers/getCurrentDomain'
 import STORAGE_JSON from './abi/Storage.json'
 import EX_STORAGE_JSON from "./abi/ExStorage.json"
+import { Interface as AbiInterface } from '@ethersproject/abi'
+
 import { useStorageContract, useExStorageContract } from './useContract'
 import { useStoragePreloader } from './StoragePreloader'
-import STORAGE_DATA from '@/constants/STORAGE_DATA'
+import STORAGE_DATA, { STORAGE_EX_DATA } from '@/constants/STORAGE_DATA'
+
+import { callMulticall } from '@/helpers/callMulticall'
+import getMultiCall  from '@/web3/getMultiCall'
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
@@ -17,7 +22,23 @@ const parseInfo = (info) => {
   Object.keys(parsed).forEach((optKey) => {
     if (result[optKey]) parsed[optKey] = result[optKey]
   })
+  if (!parsed['exdata']) parsed['exdata'] = {}
+  Object.keys(STORAGE_EX_DATA).forEach((optKey) => {
+    if (!parsed['exdata'][optKey]) parsed['exdata'][optKey] = STORAGE_EX_DATA[optKey]
+  })
   return parsed
+}
+const applyExData = (data, exdata) => {
+  exdata = exdata || []
+  
+  exdata.forEach(({ key, info }) => {
+    info = JSON.parse(info)
+    data.exdata[key] = {
+      ...(data.exdata[key] || {}),
+      ...(info)
+    }
+  })
+  return data
 }
 
 const StorageProviderContext = createContext({
@@ -65,6 +86,38 @@ export default function StorageProvider(props) {
   const [ isOwner, setIsOwner ] = useState(false)
   const [ owner, setOwner ] = useState(false)
   
+  const fetchStorageData = () => {
+    return new Promise((resolve, reject) => {
+      const multicall = getMultiCall(storageChainId)
+      const storageAbiInterface = new AbiInterface(STORAGE_JSON.abi)
+      const exStorageAbitInterface = new AbiInterface(EX_STORAGE_JSON.abi)
+
+      callMulticall({
+        multicall,
+        calls: {
+          main: { func: 'getData', args: [ getCurrentDomain() ], target: storageAddress, encoder: storageAbiInterface },
+          exdata: { func: 'getScopeData', args: [ getCurrentDomain() ], target: exStorageAddress, encoder: exStorageAbitInterface, asArray: true },
+          
+        }
+      }).then((answer) => {
+        const {
+          main: {
+            info,
+            owner
+          },
+          exdata,
+        } = answer
+        resolve({
+          info,
+          owner,
+          exdata
+        })
+      }).catch((err) => {
+        reject(err)
+      })
+    })
+  }
+
   useEffect(() => {
     if (needRealoadStorage) {
       setNeedReloadStorage(false)
@@ -78,10 +131,12 @@ export default function StorageProvider(props) {
         setStorageError(false)
         let parsed: any
         let owner
-
+        
         try {
-          storageData = await storageContractReadonly.methods.getData(getCurrentDomain()).call()
+          // storageData = await storageContractReadonly.methods.getData(getCurrentDomain()).call()
+          storageData = await fetchStorageData()
           parsed = parseInfo(storageData.info || '{}')
+          parsed = applyExData(parsed, storageData.exdata)
         } catch (error) {
           console.log('>>> error', error)
           setStorageError(error)
@@ -133,10 +188,12 @@ export default function StorageProvider(props) {
 
   const {
     storageChainId,
-    storageAddress
+    storageAddress,
+    exStorageAddress
   } = getStorageInfo()
 
   const [ storageContract, setStorageContract ] = useState(false)
+  const [ exStorageContract, setExStorageContract ] = useState(false)
 
   useEffect(() => {
     if (storageAddress
@@ -148,10 +205,13 @@ export default function StorageProvider(props) {
     ) {
       const storageContract = new injectedWeb3.eth.Contract(STORAGE_JSON.abi, storageAddress)
       setStorageContract(storageContract)
+      const exStorageContract = new injectedWeb3.eth.Contract(EX_STORAGE_JSON.abi, exStorageAddress)
+      setExStorageContract(exStorageContract)
     } else {
       setStorageContract(false)
+      setExStorageContract(false)
     }
-  }, [ storageAddress, storageChainId, injectedAccount, injectedChainId, injectedWeb3 ])
+  }, [ storageAddress, exStorageAddress, storageChainId, injectedAccount, injectedChainId, injectedWeb3 ])
 
   const doReloadStorage = () => {
     setNeedReloadStorage(true)
@@ -170,6 +230,7 @@ export default function StorageProvider(props) {
     const saveData = {
       ...storageData,
       ...newData,
+      exdata: {}
     }
     console.log('>>> saveData', saveData, injectedAccount, storageContract)
     if (injectedAccount && storageContract) {
@@ -204,7 +265,44 @@ export default function StorageProvider(props) {
       })
     }
   }
-  const saveExStorage = () => {}
+  const saveExStorage = async (options) => {
+    const {
+      onBegin,
+      onReady,
+      onError,
+      key,
+      newData,
+    } = options
+
+    console.log('>>> saveData', key, newData, injectedAccount, exStorageContract)
+    if (injectedAccount && exStorageContract) {
+      if (onBegin) onBegin()
+      setIsStorageSave(true)
+      const setupTxData = await calcSendArgWithFee(
+        injectedAccount,
+        exStorageContract,
+        "setScopeKeyData",
+        [
+          getCurrentDomain(),
+          key,
+          JSON.stringify(newData)
+        ]
+      )
+      console.log('>>> setupTxData', setupTxData)
+      exStorageContract.methods.setScopeKeyData(
+        getCurrentDomain(),
+        key,
+         JSON.stringify(newData)
+      ).send(setupTxData).then(() => {
+        setIsStorageSave(false)
+        if (onReady) onReady()
+      }).catch((e) => {
+        console.log('>>> error', e)
+        setIsStorageSave(false)
+        if (onError) onError(e)
+      })
+    }
+  }
   const installAtDomain = (options = {}) => {
     const {
       onReady,
@@ -229,6 +327,7 @@ export default function StorageProvider(props) {
         storageData,
         doReloadStorage,
         saveStorage,
+        saveExStorage,
         isStorageSave,
         storageIsLoading,
         installAtDomain,

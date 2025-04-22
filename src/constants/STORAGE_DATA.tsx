@@ -20,5 +20,14 @@ const STORAGE_DATA = {
   ]
 }
 
+export const STORAGE_EX_DATA = {
+  whitelabel: {
+    siteTitle: '[PAGE_TITLE] - Universal Staking Platform',
+    siteDescription: 'Universal ERC20, BEP20, POL20, EVM-Like whitelabel tokens stake system',
+    siteLogo: './assets/logo.png',
+    footerSlogan: 'Staking platform for managing your blockchain assets securely and efficiently.',
+    footerCopyright: '© [YEAR] Staking Platform. All rights reserved.'
+  }
+}
 
 export default STORAGE_DATA

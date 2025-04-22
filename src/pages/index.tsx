@@ -9,7 +9,7 @@ import { useEffect, useState } from "react"
 import AppConfigInstall from '@/views/appconfig/Install'
 import AppRootWrapper from '@/components/AppRootWrapper'
 import StakeFactoryProvider from '@/contexts/StakeFactoryContext'
-import MyStakeApp from './_index'
+import MyStakeApp from '@/views/'
 
 function MyApp(pageProps) {
   const [ appIsConfigured, setAppIsConfigured ] = useState(false)

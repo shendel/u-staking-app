@@ -54,7 +54,10 @@ function MyStakeApp(pageProps) {
             markdownSource
           } = router
           if (type == `ROUTER_MD`) {
-            newMdRouters[url] = MarkDownViewer(markdownSource)
+            newMdRouters[url] = MarkDownViewer({
+              title,
+              url: markdownSource
+            })
           }
         })
         console.log('>>> new Md routers', newMdRouters)
