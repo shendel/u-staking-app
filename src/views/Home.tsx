@@ -6,6 +6,8 @@ import { useStorageProvider } from '@/storage/StorageProvider'
 import { useStakeFactory } from '@/contexts/StakeFactoryContext'
 
 import StakingForm from '@/components/StakingForm'
+import MarkDownBlock from '@/components/MarkDownBlock'
+
 import StakingInfoBlock from '@/components/StakingInfoBlock'
 import ConnectWalletButton from '@/components/ConnectWalletButton'
 import SetupAppForm from '@/components/appconfig/SetupAppForm'
@@ -27,6 +29,9 @@ export default function Home(props) {
     storageData: {
       exdata: {
         whitelabel,
+        homepage_topBlock,
+        homepage_middleBlock,
+        homepage_bottomBlock
       }
     }
   } = useStorageProvider()
@@ -46,12 +51,26 @@ console.log('>>> Home fetchFactoryInfo', fetchFactoryInfo)
       <Head>
         <title>{whitelabel.siteTitle.replace('[PAGE_TITLE]', 'Home')}</title>
       </Head>
+      {homepage_topBlock?.enabled && (
+        <div className="w-full p-6">
+          <div className="bg-white rounded-lg shadow-md p-6 w-full mx-auto lg:max-w-6xl markdown-container" style={{paddingBottom: '1px'}}>
+            <MarkDownBlock markdown={homepage_topBlock.content} />
+          </div>
+        </div>
+      )}
       <StakingInfoBlock
         isFetchingFactory={isFetchingFactory}
         isFactoryError={isFactoryError}
         contractInfo={contractInfo}
         fetchFactoryInfo={fetchFactoryInfo}
       />
+      {homepage_middleBlock?.enabled && (
+        <div className="w-full p-6">
+          <div className="bg-white rounded-lg shadow-md p-6 pb-0 w-full mx-auto lg:max-w-6xl markdown-container" style={{paddingBottom: '1px'}}>
+            <MarkDownBlock markdown={homepage_middleBlock.content} />
+          </div>
+        </div>
+      )}
       {!injectedAccount && (
         <ConnectWalletButton />
       )}
@@ -62,6 +81,13 @@ console.log('>>> Home fetchFactoryInfo', fetchFactoryInfo)
           contractInfo={contractInfo}
           fetchFactoryInfo={fetchFactoryInfo}
         />
+      )}
+      {homepage_bottomBlock?.enabled && (
+        <div className="w-full p-6">
+          <div className="bg-white rounded-lg shadow-md p-6 pb-0 w-full mx-auto lg:max-w-6xl markdown-container" style={{paddingBottom: '1px'}}>
+            <MarkDownBlock markdown={homepage_bottomBlock.content} />
+          </div>
+        </div>
       )}
     </>
   )
